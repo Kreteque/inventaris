@@ -1,48 +1,105 @@
 import { Alert, StyleSheet, Text, View, Button } from 'react-native'
-import React from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
+import { useState } from 'react/cjs/react.development';
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import {db} from '../database/Config';
-import { ref, set, update, onValue, remove, push, child, database } from "firebase/database";
+import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot } from "firebase/database";
+import { useEffect } from 'react';
 
-function createData() {
-    
-    // const newKey = push(child(ref(database), 'users')).key;
+let initialArray = [
+    {
+        id : 1,
+        text : "one",
+        other: "once",
+    },
+    {
+        id : 2,
+        text: "two",
+        other: "twice",
+    },
+    {
+        id: 3,
+        text: "three",
+        other: "third",
+    },
+    {
+        id: 4,
+        text: "four",
+        other: "forth",
+    },
+    {
+        id: 5,
+        text: "five",
+        other: "fifth",
+    },
+    {
+        id: 6,
+        text: "six",
+        other: "sixth",
+    },
+    {
+        id: 7,
+        text: "seven",
+        other: "third",
+    }
+];
 
-    set(ref(db, '/users'), {          
-    
-    }).then(() => {
-      // Data saved successfully!
-      alert('data updated!');    
-  })  
-      .catch((error) => {
-          // The write failed...
-          alert(error);
-      });
-}
+
 
 export default function AllProducts({navigation}) {
+
+
+    const [prodItems, setProdItems] = useState([]);
+    
+const getData = () => {
+    const starCountRef = ref(db, 'products/');
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      setProdItems(data);
+      console.log(data);
+    });
+
+}
+    
+useEffect(() => {
+    getData();
+}, [])
+
+    //  const obj = JSON.parse(prodItems);
+    
+
   return (
+
     <View style={styles.container}>
 
         <View style={styles.containerChild}>
 
             <View style={styles.infoCard}>
-
+                
             </View>
 
         </View>
-
+        
         <ScrollView style={styles.containerChildTwo}>
-            <View style={styles.productListCard}>
 
-            </View>
+            
+        {/* <View style={styles.productListCard}>
+           <Text>{prodItems.proName}</Text>
+           <Text>{prodItems.UID}</Text>
+        </View> */}
+        {Object.values(prodItems).map((item) => {
+            return (
+                <View style={styles.productListCard}>
+                    <Text>{item.proName}</Text>
+                    
+                </View>
+            )
+        })}
+        
+            
 
-            <View style={styles.productListCard}>
-
-            </View>
         </ScrollView>
 
-        <Button title='Masukan Produk' color={'#b45f06'} onPress={() => navigation.navigate('Tambah Produk')}/>
+        <Button title='Masukan Produk' color={'rgba(78, 116, 289, 1)'} onPress={() => navigation.navigate('Tambah Produk')}/>
        
       
     </View>

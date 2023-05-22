@@ -3,14 +3,14 @@ import React, { useState } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, TouchableRipple } from 'react-native-paper';
-
+import AllProducts from './AllProducts';
 
 
 const totalProduk = 100.0;
 // const productItems = firebase.firestore().collection('products');
 
 
-export default function Dashboard({props}) {
+export default function Dashboard({navigation}) {
   return (
     <View style={[styles.container]}>
         
@@ -45,7 +45,7 @@ export default function Dashboard({props}) {
                   <Text>TOTAL MASUK</Text>
                 </TouchableRipple>
 
-                <TouchableRipple style={styles.dashButtons} onPress={() => Alert.alert('TOTAL PRODUK')} rippleColor="rgba(238, 238, 238, .128)" >
+                <TouchableRipple style={styles.dashButtons} onPress={() => navigation.navigate('Semua Produk')} rippleColor="rgba(238, 238, 238, .128)" >
                   <Text>TOTAL PRODUK</Text>
                 </TouchableRipple>
 

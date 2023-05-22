@@ -17,6 +17,8 @@ import ProductOutScreen from './src/screens/ProductOutScreen';
 import Dashboard from './src/components/Dashboard';
 import AllProducts from './src/components/AllProducts';
 import AddProduct from './src/components/AddProduct';
+import { createStackNavigator } from '@react-navigation/stack';
+
 
 
 
@@ -30,12 +32,13 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
-      <DrawerItem label="Credits" onPress={() => Linking.openURL('https://github.com/Kreteque')} />
+      <DrawerItem label="Github" onPress={() => Linking.openURL('https://github.com/Kreteque')} />
     </DrawerContentScrollView>
   );
 }
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 function MyDrawer() {
   return (
@@ -64,7 +67,7 @@ function MyDrawer() {
       )}} />
 
       <Drawer.Screen 
-        name="Semua Transaksi"npm
+        name="Semua Transaksi"
         component={TransactionsScreen}
         options={{drawerIcon : () => (
           <MaterialCommunityIcons name="file-document-multiple-outline" color={'#38761d'} size={15} />
@@ -98,20 +101,33 @@ function MyDrawer() {
                   <MaterialCommunityIcons name="help" size={15} />)
                    }} />
 
-      <Drawer.Screen 
+      {/* <Drawer.Screen 
       name='Tambah Produk'
       component={AddProduct}
-       />
+       /> */}
 
     </Drawer.Navigator>
+
+    
+  );
+}
+
+function MyStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Drawer" component={MyDrawer} options={{ headerShown: false }} />
+      <Stack.Screen name='Tambah Produk' component={AddProduct}/>
+    </Stack.Navigator>
   );
 }
 
 export default function App() {
   return (
+
     <NavigationContainer>
 
-      <MyDrawer/>
+      {/* <MyDrawer/> */}
+      <MyStack/>
 
     </NavigationContainer>
     
@@ -119,10 +135,3 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({})
-
-
-/* DEPENDENCIES :
-    ---> React Native Navigation @https://reactnavigation.org/
-    L-----> Material Bottom Tabs Navigator @https://reactnavigation.org/docs/material-bottom-tab-navigator/
-      L---------> React Native Vector Icons @https://github.com/oblador/react-native-vector-icons#installation
-*/         
