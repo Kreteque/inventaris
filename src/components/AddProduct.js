@@ -142,7 +142,7 @@ export default function AddProduct() {
           placeholder="Deskripsi Produk"
           mode='outlined'
           style={styles.textBoxes}
-          maxLength={360}>
+          maxLength={60}>
       </TextInput>
 
       <TextInput 

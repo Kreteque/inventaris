@@ -246,13 +246,14 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                         
                     </View>
                             <View style={{
-                                flex: 1,
+                                // flex: 1,
                                 alignSelf:"flex-end",
                                 justifyContent:"center",
                                 width: 150,
                                 height: 150,
                                 // backgroundColor: "grey",
                                 flexDirection: "row",
+                                // position:"relative"
                                 }} >
                                 
                                 <TouchableOpacity>
