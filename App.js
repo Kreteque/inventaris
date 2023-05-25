@@ -17,6 +17,7 @@ import ProductOutScreen from './src/screens/ProductOutScreen';
 import Dashboard from './src/components/Dashboard';
 import AllProducts from './src/components/AllProducts';
 import AddProduct from './src/components/AddProduct';
+import BottomDrawer from './src/components/BottomDrawer';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
@@ -49,7 +50,8 @@ function MyDrawer() {
       drawerStyle: {
       backgroundColor: '#c6cbef',
       width: 240,
-    },
+      
+    }
   }}
     >
       <Drawer.Screen
@@ -68,7 +70,7 @@ function MyDrawer() {
 
       <Drawer.Screen 
         name="Semua Transaksi"
-        component={TransactionsScreen}
+        component={BottomDrawer}
         options={{drawerIcon : () => (
           <MaterialCommunityIcons name="file-document-multiple-outline" color={'#38761d'} size={15} />
       )}} />

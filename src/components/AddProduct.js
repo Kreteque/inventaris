@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, Text, View, } from 'react-native';
 import { useState } from 'react/cjs/react.development';
 import { ref, set, update, onValue, remove } from "firebase/database";
 import { db } from '../database/Config';
@@ -11,7 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 
 
-export default function App() {
+export default function AddProduct() {
 
   const [uniqID, setUniqID] = useState(""); 
   const [proName, setProName] = useState("");
@@ -29,11 +29,11 @@ export default function App() {
 
            
               set(ref(db, 'products/' + uniqID ), {          
-                UID: uniqID,
-                proName: proName,
-                qtty: qtty,
-                proDesc: proDesc,
-                buyRate: buyRate,
+                UID: uniqID.toUpperCase(),
+                proName: proName.charAt(0).toUpperCase() + proName.slice(1),
+                qtty: parseInt(qtty),
+                proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
+                buyRate: parseInt(buyRate),
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
@@ -142,7 +142,7 @@ export default function App() {
           placeholder="Deskripsi Produk"
           mode='outlined'
           style={styles.textBoxes}
-          maxLength={36}>
+          maxLength={360}>
       </TextInput>
 
       <TextInput 
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   textBoxes: {
     width: '90%', 
-    // height: '10%',
+    height: 50,
     fontSize: 15,
      padding:5,
      marginBottom : 5,

@@ -10,7 +10,7 @@ const totalProduk = 100.0;
 // const productItems = firebase.firestore().collection('products');
 
 
-export default function Dashboard({navigation}) {
+export default function Dashboard({navigation, props}) {
   return (
     <View style={[styles.container]}>
         
