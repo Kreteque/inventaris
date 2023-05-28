@@ -3,7 +3,6 @@ import { useState } from 'react/cjs/react.development';
 import { ref, set, update, onValue, remove } from "firebase/database";
 import { db } from '../database/Config';
 import uuid from 'react-native-uuid';
-import { color } from '@rneui/base';
 import { TextInput } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, Icon } from '@rneui/themed';
@@ -29,7 +28,7 @@ export default function AddProduct() {
 
            
               set(ref(db, 'products/' + uniqID ), {          
-                UID: uniqID.toUpperCase(),
+                UID: uniqID,
                 proName: proName.charAt(0).toUpperCase() + proName.slice(1),
                 qtty: parseInt(qtty),
                 proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),

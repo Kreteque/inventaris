@@ -19,6 +19,8 @@ import AllProducts from './src/components/AllProducts';
 import AddProduct from './src/components/AddProduct';
 import BottomDrawer from './src/components/BottomDrawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import AddTransaction from './src/components/AddTransaction';
+
 
 
 
@@ -119,6 +121,7 @@ function MyStack() {
     <Stack.Navigator>
       <Stack.Screen name="Drawer" component={MyDrawer} options={{ headerShown: false }} />
       <Stack.Screen name='Tambah Produk' component={AddProduct}/>
+      <Stack.Screen name='Tambah Transaksi' component={AddTransaction} />
     </Stack.Navigator>
   );
 }

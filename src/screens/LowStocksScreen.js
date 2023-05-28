@@ -6,7 +6,7 @@ export default function LowStocksScreen({navigation}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Halaman Stok Rendah</Text>
-      <Text>On Progress</Text>
+      <Text></Text>
       
     </View>
   )
