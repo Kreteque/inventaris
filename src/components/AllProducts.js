@@ -33,43 +33,28 @@ export default function AllProducts({navigation, props}) {
     const [sortedBy, setSortedBy] = useState("");
     const [searchVal, setSearchVal] = useState("");
     const [isSearching, setIsSearching] = useState(false);
+    const [sortedObject, setSortedObject] = useState();
+
+
     
 
     let totalQtty = [];
     let totalBuyRate = [];
-    const sortable = Object.values(prodItems);
-    const sortedByQtty = sortable.sort((a,b) => {
-        return b.qtty - a.qtty;
-    });
-    const sortedByNameAcs = sortable.sort((a, b) => {
-        let fa = a.proName.toLowerCase(),
-            fb = b.proName.toLowerCase();
     
-        if (fa < fb) {
-            return -1;
-        }
-        if (fa > fb) {
-            return 1;
-        }
-        return 0;
-    });
-    const sortedByNameDcs = sortable.sort((a, b) => {
-        let fa = a.proName.toLowerCase(),
-            fb = b.proName.toLowerCase();
-    
-        
-        if (fa > fb) {
-            return 1;
-        }
-        if (fa < fb) {
-            return -1;
-        }
-        return 0;
-    });
     
     // let totalProducts = [];
+    const dateStamp = new Date();
+    const month = dateStamp.getMonth() + 1;
+    const updatedTimeStamp = String(dateStamp.getDate() + "/" + month + "/" + dateStamp.getFullYear());
+    const formatter = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+      
+      });
 
-
+   
+      
+      
 
     
 const getData = () => {
@@ -80,18 +65,41 @@ const getData = () => {
         if (data === null) {
             setProdItems("");
             setNotNull(false);
+            
         } else {
             setProdItems(data);
             setNotNull(true);
+            
         }
-    });
+    })
 
 }
+
+useEffect(() => {
+    getData();
+    
+    setSortedObject(sortable);
+    checkSortedBy();
+    setSortedBy("sortable");
+    
+    
+}, [])
+
+const totalCount = Object.values(prodItems);
+totalCount.map((item) => {
+    totalQtty.push(item.qtty);
+    totalBuyRate.push(item.buyRate);
+    // setSortedObject(item);
+    // totalProducts.push(item.UID);
+});
+
+const totBR = totalBuyRate.reduce((a, b) => a + b, 0);
+      let totBRnum = parseInt(totBR);
 
 const delData = (param) => {
     
     remove(ref(db, 'products/' + param));
-    alert('removed');
+    
   }
 
 const updateData = () => {
@@ -103,7 +111,8 @@ const updateData = () => {
         proName: proName.charAt(0).toUpperCase() + proName.slice(1),
         qtty: parseInt(qtty),
         proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
-        buyRate: parseInt(buyRate),  
+        buyRate: parseInt(buyRate),
+        updatedTimeMark: updatedTimeStamp
       }).then(() => {
         
         handleCloseBottomSheet();
@@ -118,17 +127,10 @@ const updateData = () => {
 }
 
 
-useEffect(() => {
-    getData();
-    
-}, [])
+
 
     // notNull ? //  const obj = JSON.parse(prodItems);
-    sortable.map((item) => {
-        totalQtty.push(item.qtty);
-        totalBuyRate.push(item.buyRate);
-        // totalProducts.push(item.UID);
-    }) 
+    
     // : totalQtty.push(0) ;
    
 
@@ -150,6 +152,8 @@ const handleCloseBottomSheet = () => {
   setIsBottomSheetOpen(false);
   setIsEditable(false);
 };
+
+
 
 const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSpacing, align = 'left', leading }) => {
     
@@ -185,7 +189,57 @@ prodList = prodList.filter(function(item){
           | item.proDesc == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
           | item.qtty == searchVal 
           | item.buyRate == searchVal;
-})
+});
+
+
+
+let prodSortedByQtty = Object.values(prodItems);
+prodSortedByQtty = prodSortedByQtty.sort((a, b) => a.qtty - b.qtty);
+
+let sortable = Object.values(prodItems);
+
+
+
+let prodSortedByName = Object.values(prodItems);
+prodSortedByName = prodSortedByName.sort((a, b) => {
+    const nameA = a.proName.toUpperCase(); // ignore upper and lowercase
+    const nameB = b.proName.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+  
+    // names must be equal
+    return 0;
+  });
+
+console.log(sortedObject);
+
+
+const checkSortedBy = () => {
+    switch (sortedBy) {
+        case "sortable":
+            sortable = prodSortedByName
+            // setSortedBy([]);
+            break;
+        case "qtty":
+            sortable = prodSortedByQtty
+            // setSortedBy([]);
+            break;
+        case "name":
+            setSortedObject(prodSortedByName);
+            // setSortedBy([]);
+            break;
+    
+        default:
+            setSortedObject(sortable)
+            break;
+    }
+    
+    
+}
     
   return (
 
@@ -211,13 +265,12 @@ prodList = prodList.filter(function(item){
 
             <View>
                     <Text style={styles.totalText}> : {totalQtty.reduce((a, b) => {
+                        {/* console.log(sortedByQtty); */}
                         return a + b;
                     }, 0)}
                     </Text>
 
-                    <Text style={styles.totalText}> : Rp. {totalBuyRate.reduce((a, b) => {
-                        return a + b;
-                    }, 0)}
+                    <Text style={styles.totalText}> : {formatter.format(totBRnum) }
                     </Text>
 
                     <Text style={styles.totalText}> : {Object.keys(prodItems).length}
@@ -227,6 +280,17 @@ prodList = prodList.filter(function(item){
             </View>
 
         </View>
+
+        {/* <View style={{
+            height:30,
+            width: 300,
+            backgroundColor: "grey",
+            flexDirection: "row"
+        }}>
+        <TouchableOpacity style={{width: 60, height: 30, backgroundColor: "green"}} onPress={() => {setSortedBy("qtty"); checkSortedBy();}}/>
+        <TouchableOpacity style={{width: 60, height: 30, backgroundColor: "brown"}} onPress={() => {setSortedBy("name"); checkSortedBy()}}/>
+
+        </View> */}
 
         {isSearching ?<View>
             <TextInput 
@@ -274,12 +338,12 @@ prodList = prodList.filter(function(item){
         
         <ScrollView style={styles.containerChildTwo}>
 
-        {notNull ? sortedByQtty.map((item) => {
+        {notNull ? sortable.map((item) => {
             const firstLetter = item.proName;
-            
+            {/* console.log(item); */}
             
             return (
-                <TouchableOpacity style={styles.productListCard} key={item.UID} onPress={() => {handleOpenBottomSheet(item)}}>
+                <TouchableOpacity style={styles.productListCard} key={item.UID} onPress={() => {handleOpenBottomSheet(item); setCollapsedButton(false)}}>
 
                     <View style={{
                         width: 56,
@@ -325,7 +389,7 @@ prodList = prodList.filter(function(item){
                         
                         
                         return (
-                            <TouchableOpacity style={styles.productListCard} key={item.UID} >
+                            <TouchableOpacity style={styles.productListCard} key={item.UID} onPress={() => {handleOpenBottomSheet(item)}} >
 
                                 <View style={{
                                     width: 56,
@@ -417,6 +481,14 @@ prodList = prodList.filter(function(item){
                                 <SubText text={String(prevName.buyRate)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
                             </View>
+
+                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                                <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
+                                <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
+                            </View>
                     </View>
                         
                             <View style={{
@@ -438,21 +510,28 @@ prodList = prodList.filter(function(item){
                                         alignSelf:"flex-end",
                                         marginTop:90
                                     }} size={40} color={"rgba(218, 26, 11, 0.8)"} onPress={() => {
-                                        alert("Anda yakin?");
-                                        delData(prevName.UID.toLowerCase()); 
+                                        Alert.alert(prevName.proName + " akan dihapus!", 'Data akan hilang selamanya!', [
+                                            {
+                                                text: 'Batal',
+                                                onPress: () => console.log('Cancel Pressed'),
+                                                style: 'cancel',
+                                            },
+                                            {text: 'Hapus', onPress: () => delData(prevName.UID.toLowerCase())},
+                                            ]);
+                                         
                                         handleCloseBottomSheet()
                                     }}></MaterialCommunityIcons>
 
                                 </TouchableOpacity>
                                 
 
-                                <TouchableOpacity>
+                                {/* <TouchableOpacity>
                                     <MaterialCommunityIcons name='plus-circle' style={{
                                         alignSelf:"flex-end",
                                         marginTop:90,
                                         marginLeft:15
                                     }} size={40} color={"rgba(9, 130, 200, 0.8)"} onPress={() => {alert("Mari Menyerah!")}}></MaterialCommunityIcons>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
 
                                 <TouchableOpacity>
                                     <MaterialCommunityIcons name='circle-edit-outline' style={{
@@ -558,9 +637,16 @@ prodList = prodList.filter(function(item){
                                         alignSelf:"flex-end",
                                         marginTop:90
                                     }} size={40} color={"rgba(218, 26, 11, 0.8)"} onPress={() => {
-                                        alert("Anda yakin?");
-                                        delData(prevName.UID.toLowerCase()); 
-                                        handleCloseBottomSheet()
+                                        Alert.alert(prevName.proName + " akan dihapus!", 'Data akan hilang selamanya!', [
+                                            {
+                                                text: 'Batal',
+                                                onPress: () => console.log('Cancel Pressed'),
+                                                style: 'cancel',
+                                            },
+                                            {text: 'Hapus', onPress: () => delData(prevName.UID.toLowerCase())},
+                                            ]);
+                                        
+                                        // handleCloseBottomSheet();
                                     }}></MaterialCommunityIcons>
 
                                 </TouchableOpacity>
@@ -579,7 +665,16 @@ prodList = prodList.filter(function(item){
                                         alignSelf:"flex-end",
                                         marginTop:90,
                                         marginLeft:15
-                                    }} size={40} color={"rgba(6, 53, 186, 0.8)"} onPress={() => {setIsEditMode(true); updateData(); handleCloseBottomSheet()}}></MaterialCommunityIcons>
+                                    }} size={40} color={"rgba(6, 53, 186, 0.8)"} onPress={() => {
+                                        Alert.alert(prevName.proName + " akan diubah!", 'Kamu yaqin?', [
+                                            {
+                                                text: 'Batal',
+                                                onPress: () => console.log('dia yaqueen'),
+                                                style: 'cancel',
+                                            },
+                                            {text: 'Yakin', onPress: () => {setIsEditMode(true); updateData(); handleCloseBottomSheet()}},
+                                            ]);
+                                    }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
                             </View>
                     </View>
@@ -600,7 +695,7 @@ prodList = prodList.filter(function(item){
             width: 230
         }}>
 
-            <TouchableOpacity onPress={() => {navigation.navigate("Tambah Produk"); setCollapsedButton(false)}} style={{
+            <TouchableOpacity onPress={() => {navigation.navigate("Buat Barcode"); setCollapsedButton(false)}} style={{
                 backgroundColor: "rgba(245, 141, 12, 0.44)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
@@ -623,7 +718,7 @@ prodList = prodList.filter(function(item){
                     alignSelf:"center",
                     color: "rgba(183, 101, 0, 0.81)",
                     fontWeight: "bold"
-                }}>Cetak Barcode</Text>
+                }}>Buat Barcode</Text>
                 
             </TouchableOpacity>
 

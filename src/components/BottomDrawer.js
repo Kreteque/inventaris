@@ -8,19 +8,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export default function BottomDrawer() {
 
-    // We need to get the height of the phone and use it relatively, 
-// This is because height of phones vary
+ 
 const windowHeight = Dimensions.get('window').height;
-
-// This state would determine if the drawer sheet is visible or not
 const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-
-// Function to open the bottom sheet 
 const handleOpenBottomSheet = () => {
   setIsBottomSheetOpen(true);
 };
 
-// Function to close the bottom sheet
 const handleCloseBottomSheet = () => {
   setIsBottomSheetOpen(false);
 };
@@ -49,18 +43,15 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
     <TouchableOpacity onPress={handleOpenBottomSheet} style={{ width: '90%', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#86827e', paddingVertical: 12, borderRadius: 8 }}>
         <SubText text={'Open Drawer'} color={'#86827e'} size={16} family={'PoppinsSBold'} />
     </TouchableOpacity>
-{/* // Modal goes here */}
 
 <Modal
   animationType="slide"
   transparent={true}
-// We use the state here to toggle visibility of Bottom Sheet 
   visible={isBottomSheetOpen}
-// We pass our function as default function to close the Modal
   onRequestClose={handleCloseBottomSheet} >
 
     <View style={[styles.bottomSheet, { height: windowHeight * 0.6 }]}>
-    {/* //  First Section of Bottom sheet with Header and close button */}
+    
 
       <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
         <SubText text={'Preview'} family={'Poppins-med'} size={16} color={'#86827e'} />
@@ -68,7 +59,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
         <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
         </TouchableOpacity>
       </View>
-{/* // First Section of Bottom sheet with Header and close button */}
+
 
 {/* // Section with Information  */}
       <View style={{ paddingVertical: 16 }}>
@@ -97,7 +88,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
          </View>
   
         <View style={{ paddingTop: 16, flex: 0, flexDirection: 'row' }}>
-          {/* <Image source={require('assets/icons/map-marker-alt.png')} /> */}
+          
           <View style={{ paddingLeft: 12 }} />
           <SubText text={'Medium'} color={'#86827e'} size={14} family={'Poppins-med'} />
         </View>

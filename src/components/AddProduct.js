@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, } from 'react-native';
+import { Pressable, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { useState } from 'react/cjs/react.development';
 import { ref, set, update, onValue, remove } from "firebase/database";
 import { db } from '../database/Config';
@@ -7,6 +7,8 @@ import { TextInput } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, Icon } from '@rneui/themed';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import DatePicker from 'react-native-date-picker';
+
 
 
 
@@ -17,8 +19,68 @@ export default function AddProduct() {
   const [qtty, setQtty] = useState("");
   const [proDesc, setProDesc] = useState("");
   const [buyRate, setBuyRate] = useState("");
-
   const [textError, setTextError] = useState();
+  const dateStamp = new Date();
+  const month = dateStamp.getMonth() + 1;
+  
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false)
+  const windowHeight = Dimensions.get('window').height;
+  
+  const timeStamp = String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
+  const searchAndDestroy = String(date).split(' ');
+  const monthToNumber = () => {
+
+    
+    switch (searchAndDestroy[1]) {
+      case "Jan":
+        searchAndDestroy[1] = "01"
+        break;
+      case "Feb":
+        searchAndDestroy[1] = "02"
+        break;
+      case "Mar":
+        searchAndDestroy [1] = "03"
+        break;
+      case "Apr":
+        searchAndDestroy[1] = "04"
+        break;
+      case "May": 
+        searchAndDestroy[1] = "05"
+        break;
+      case "Jun":
+        searchAndDestroy[1] = "06"
+        break;
+      case "Jul":
+        searchAndDestroy[1] = "07"
+        break;
+      case "Aug":
+        searchAndDestroy[1] = "08"
+        break;
+      case "Sep":
+        searchAndDestroy[1] = "09"
+        break;
+      case "Oct":
+        searchAndDestroy[1] = "10"
+        break;
+      case "Nov":
+        searchAndDestroy[1] = "11"
+        break;
+      case "Des":
+        searchAndDestroy[1] = "12"
+        break;
+      
+    }
+
+    let reFormatedExp = searchAndDestroy[2] + "/" + searchAndDestroy[1] + "/" + searchAndDestroy[3];
+
+
+    if(reFormatedExp === timeStamp){
+      return reFormatedExp = "Non-Expired";
+    } else{
+      return reFormatedExp;
+    }
+  }
   
 
 
@@ -33,6 +95,8 @@ export default function AddProduct() {
                 qtty: parseInt(qtty),
                 proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
                 buyRate: parseInt(buyRate),
+                timeMark: timeStamp,
+                Exp: monthToNumber(),
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
@@ -138,7 +202,7 @@ export default function AddProduct() {
       <TextInput 
           value={proDesc}
           onChangeText={(proDesc) => {setProDesc(proDesc)}}
-          placeholder="Deskripsi Produk"
+          placeholder="Deskripsi Produk (dapat kosong)"
           mode='outlined'
           style={styles.textBoxes}
           maxLength={60}>
@@ -157,30 +221,72 @@ export default function AddProduct() {
       <TextInput
           value={buyRate}
           onChangeText={(buyRate) => {setBuyRate(buyRate)}}
-          placeholder="Harga Beli"
+          placeholder="Harga Beli satuan (kosongkan jika tdk perlu)"
           mode='outlined'
           style={styles.textBoxes}
           keyboardType='numeric'
           maxLength={9007199254740991}>
       </TextInput>
+
+      <TouchableOpacity style={{
+        // backgroundColor: "green",
+        height: 50,
+        width: 100,
+        marginTop: 10,
+        flexDirection: "row"
+
+      }} onPress={() => {setOpen(true)}}> 
+        <MaterialCommunityIcons name='calendar-multiselect' size={40}/>
+        <Text>Pilih tanggal EXPIRED</Text>
+        
+      </TouchableOpacity>
+
+      <DatePicker
+              modal
+              open={open}
+              date={date}
+              onConfirm={(date) => {
+                setOpen(false)
+                setDate(date)
+              }}
+              onCancel={() => {
+                setOpen(false)
+              }}
+              mode='date'
+              
+            />
+      
+      
+
 </ScrollView>
 
       {/* Need improvement */}
-      <Button color={'rgba(78, 116, 289, 1)'} title='Masukan Produk' onPress={() => {
+    
+      <MaterialCommunityIcons name='content-save' color={"rgba(2, 121, 6, 0.8)"} size={50} style={{
+        position:"absolute",
+        alignSelf: "center",
+        marginTop: windowHeight - 180,
+        // marginRight: 30,
+        width: 70,
+        backgroundColor:"rgba(2, 121, 6, 0.29)",
+        padding: 10,
+        height: 70,
+        borderRadius: 50
+        
+        
+      }} onPress={() => {
         if (uniqID.trim() === ""){
           setUniqID(String(uuid.v4()).slice(0, 13));
         } else if (proName.trim() === ""){
             setTextError('Nama Produk Diperlukan!');
           } else if (qtty.trim() === "" | NaN){
             setTextError('Masukan kuantitas!');
-            } else if (buyRate.trim() === ""){
-              setTextError('Masukan harga produk!');
-              } else {
+            }  else {
                 setTextError(null);
                 createData();
               }
           
-      }}> <Icon name="save" color="white" /> Simpan </Button> 
+      }}/> 
 
     </View>
   );  
