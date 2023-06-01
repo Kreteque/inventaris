@@ -89,7 +89,8 @@ export default function MakeBarcode() {
             fontSize : 15,
             fontWeight: "600",
             padding: 5,
-            textAlign : "center"
+            textAlign : "center",
+            color: "grey"
         }}>Halo, mohon maaf jika fitur ini kurang memusakan. untuk print barcode, silakan ambil screenshot lalu print dengan nyaman lewat galeri perangkat. terimaksih!</Text>
     </View> : <View style={{
         height: 50,

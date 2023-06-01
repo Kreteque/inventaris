@@ -25,6 +25,7 @@ const [statusIcon, setStatusIcon] = useState();
 const [statusStran, setStatusTran] = useState();
 const [statusColor, setStatusColor] = useState();
 const [transacOut, setTransacOut] = useState("0");
+const [addOrSubb, setAddOrSubb] = useState();
 const [isNull, setIsNull] = useState(false);
 const [isThere, setIsThere] = useState(true);
 const [data, setData] = useState([]);
@@ -72,6 +73,7 @@ const createData = () => {
         buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
         timeMark: prevName.timeMark,
         Exp: prevName.Exp,
+        subbsQtty: "0",
         addedQtty: parseInt(transacIn),
         transactionTimeMark : timeStamp,
         status: "Masuk",
@@ -81,7 +83,7 @@ const createData = () => {
         alert("transaksi ditambah");
         // setIsEditMode(true);
         setTransacIn("");
-
+        
         update(ref(db, 'products/' + prevName.UID), {
             qtty : parseInt(prevName.qtty + parseInt(transacIn))
         });
@@ -115,22 +117,21 @@ const similarityChecker = () => {
 
 useEffect(() => {
     readData();
-    similarityChecker();
     console.log(prodItems);
     // checkStatus();
     if (prodItems ==  null) {
         setIsNull(true);
     } else {
         setIsNull(false)
-    }
+    } 
 }, []);
 
 const createDataOut = () => {
     
         
-        dataToCheck = similarityChecker();
         
-        if (dataToCheck == prevName.UID) {
+        
+        
             set(ref(db, 'transactions/' + trUID ), {    
                 
                 transacID: trUID,   
@@ -142,6 +143,7 @@ const createDataOut = () => {
                 timeMark: prevName.timeMark,
                 Exp: prevName.Exp,
                 subbsQtty: parseInt(transacOut),
+                addedQtty: "0",
                 transactionTimeMark : timeStamp,
                 status : "Keluar",
                 icon: "arrow-up-bold-box",
@@ -150,27 +152,13 @@ const createDataOut = () => {
                 alert("transaksi ditambah");
                 // setIsEditMode(true);
                 setTransacIn("");
-        
-                update(ref(db, 'products/' + trUID), {
+                
+                update(ref(db, 'products/' + prevName.UID), {
                     qtty : parseInt(prevName.qtty - parseInt(transacOut))
                 });
               })
               
             
-        } else {
-            Alert.alert("Transaksi " + prevName.proName + " tidak ditemukan dalam data inventaris!", 'Hapus data transaksi?', [
-                {
-                    text: 'Batal',
-                    
-                    style: 'cancel',
-                },
-                {text: 'Hapus', onPress: () => {delData(prevName.transacID.toLowerCase()); handleCloseBottomSheet();}},
-                ])
-            console.log("data unavaliable");
-        }
-    
-    
-      return console.log(dataToCheck);
 }
 
 
@@ -203,6 +191,12 @@ const handleOpenBottomSheet = (param) => {
   
   setIsBottomSheetOpen(true);
   setPrevName(param);
+
+  if (param.addedQtty !== "0") {
+    setAddOrSubb(param.addedQtty);
+  } else {
+    setAddOrSubb(param.subbsQtty);
+  }
 };
 
 const handleCloseBottomSheet = () => {
@@ -233,16 +227,29 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
 
     
     <View style={styles.container}>
-      <TextInput 
-          outlineColor='rgba(17, 2, 158, 0.25)' 
-          activeOutlineColor="rgba(17, 2, 158, 0.25)" 
-          mode='outlined' 
-          value={searchVal} 
-          onChangeText={(searchVal) => {setSearchVal(searchVal); setIsSearching(true)}} 
-          placeholder='Cari barang berdasarkan (UID, Nama Produk, harga beli, dll)' 
-          style={styles.specializedTextBox} onBlur={() => {setIsSearching(false)}}>
+        <View>
+            <TextInput 
+                outlineColor='rgba(17, 2, 158, 0.25)' 
+                activeOutlineColor="rgba(17, 2, 158, 0.25)" 
+                mode='outlined' 
+                value={searchVal} 
+                onChangeText={(searchVal) => {setSearchVal(searchVal); setIsSearching(true)}} 
+                placeholder='Cari barang berdasarkan semua properti' 
+                style={styles.specializedTextBox} onBlur={() => {setIsSearching(true)}}>
 
-      </TextInput>
+            </TextInput>
+
+             { isSearching ? <MaterialCommunityIcons onPress={() => {setIsSearching(false); setSearchVal("")}} color={"red"} name='close' size={30} style={{
+                height: 50,
+                width: 50,
+                // backgroundColor: "green",
+                position: "absolute",
+                alignSelf: "flex-end",
+                marginTop: 20,
+                // marginRight: 200,
+                
+            }}/> : null }
+      </View>
 
       {/* {!!isNull && (<View><Text>No product to display</Text></View>)} */}
 
@@ -291,7 +298,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     
                 </TouchableOpacity>
             )
-        }) : setIsNull(true)}
+        }) : null}
         
         
         </ScrollView> : <ScrollView style={styles.containerChildTwo}>
@@ -315,7 +322,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     <View style={{
                         width: 56,
                         height: "100%",
-                        backgroundColor: "rgba(9, 138, 4, 0.7)",
+                        backgroundColor: item.color,
                         marginRight: 10,
                         borderRadius: 50
                     }}>
@@ -344,7 +351,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                         flexDirection : "row",
                     }}>
                     
-                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={15} color={item.color}/>{item.status}: </Text></Text>
+                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={15} color={item.color}/>{item.status} </Text></Text>
                     {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
                     </View>
                     
@@ -379,9 +386,9 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     {/* //  First Section of Bottom sheet with Header and close button */}
 
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
-                        <SubText text={"Detail Transaksi"} family={'Poppins-med'} size={16} color={'#86827e'} />
+                        <SubText text={"Detail Transaksi " + prevName.status} family={'Poppins-med'} size={16} color={prevName.color} />
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet()}}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 
@@ -392,28 +399,28 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
-                                <SubText text={prevName.UID} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
+                                <SubText text={prevName.transacID} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (TrID)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
-                                <SubText text={String(prevName.qtty)} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
+                                <SubText text={addOrSubb} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.status}</Text>
                             </View>
 
-                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            {/* <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.buyRate)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
-                            </View>
+                            </View> */}
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
-                                <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
-                                <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
+                                <SubText text={prevName.transactionTimeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl transaksi)   ||   </Text>  
+                                {/* <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text> */}
                             </View>
                     </View>
                         
@@ -431,7 +438,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 
                                 }} >
 
-                                {isThere? <TouchableOpacity onPress={() => {
+                                <TouchableOpacity onPress={() => {
                                     Alert.alert("Transaksi " + prevName.proName + " akan dihapus!", 'Data akan hilang selamanya!', [
                                             {
                                                 text: 'Batal',
@@ -457,24 +464,9 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     color: "rgba(218, 26, 11, 0.8)"
                                 }}>Hapus Trans..</Text>
 
-                                </TouchableOpacity> : <View onPress={() => {}} style={{
-                                    // backgroundColor:"brown",
-                                    // width: 100,
-                                    height: 50,
-                                    alignSelf: "flex-end",
-                                    flex: 1,
-                                    flexDirection: "row",
-                                    justifyContent: "center",
-                                    alignItems : "center"
-                                    // position: "absolute"
-                                }}>
-                                <MaterialCommunityIcons name='cancel' size={40} color={"red"} style={{position: "absolute"}}/>
-                                <MaterialCommunityIcons name='delete-restore'  size={40}/>
+                                </TouchableOpacity> 
                                 
-
-                                </View>}
-                                
-                                {isThere? <TouchableOpacity onPress={() => {setIsEditMode(false)}} style={{
+                                 <TouchableOpacity onPress={() => {setIsEditMode(false)}} style={{
                                     // backgroundColor:"brown",
                                     width: 100,
                                     height: 50,
@@ -491,25 +483,9 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     color: "rgba(4, 112, 4, 0.77)"
                                 }}>Masuk</Text>
 
-                                </TouchableOpacity> : <View  style={{
-                                    // backgroundColor:"brown",
-                                    // width: 100,
-                                    height: 50,
-                                    alignSelf: "flex-end",
-                                    flex: 1,
-                                    flexDirection: "row",
-                                    justifyContent: "center",
-                                    alignItems : "center"
-                                    // position: "absolute"
-                                }}>
-                                
-                                <MaterialCommunityIcons name='cancel' size={40} color={"red"} style={{position: "absolute"}}/>
-                                <MaterialCommunityIcons name='archive-arrow-down'  size={40}/>
-                                
+                                </TouchableOpacity> 
 
-                                </View>}
-
-                                { isThere ? <TouchableOpacity style={{
+                                <TouchableOpacity style={{
                                     // backgroundColor:"green",
                                     width: 160,
                                     height: 50,
@@ -528,22 +504,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     color : "rgba(218, 26, 11, 0.8)"
                                 }}>Keluar</Text>
 
-                                </TouchableOpacity> : <View style={{
-                                    // backgroundColor:"green",
-                                    width: 160,
-                                    height: 50,
-                                    alignSelf: "flex-end",
-                                    flex: 1,
-                                    justifyContent: "center",
-                                    alignItems : "center",
-                                    flexDirection: "row",
-                                    // position: "absolute"
-                                }}>
-                                
-                                <MaterialCommunityIcons name='cancel' size={40} color={"red"} style={{position: "absolute"}}/>
-                                <MaterialCommunityIcons name='archive-arrow-up'  size={40}/>
-
-                                </View>}
+                                </TouchableOpacity>
                             </View>
                     </View>
        
@@ -563,7 +524,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <Text style={{fontWeight:"bold", fontSize:20, color:"rgba(rgba(4, 112, 4, 0.77)"}}>Transaksi Masuk</Text>
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet(); setIsEditMode(true); setTransacIn("")}}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 
@@ -654,7 +615,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <Text style={{fontWeight:"bold", fontSize:20, color:"rgba(136, 8, 4, 0.68)"}}>Transaksi Keluar</Text>
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet(); setIsEditMode(true); setTranOut(""); setTransacOut(""); }}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 

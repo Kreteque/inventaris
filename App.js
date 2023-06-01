@@ -227,7 +227,11 @@ function createData() {
             // position: "absolute",
             margin: 50,
             marginTop: 300,
-            textAlign: "center"
+            textAlign: "center",
+            borderBottomWidth: 3,
+            borderBottomColor: "grey",
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10
 
           }}
           maxLength={8}

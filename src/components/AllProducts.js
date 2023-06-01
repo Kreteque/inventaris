@@ -77,11 +77,9 @@ const getData = () => {
 
 useEffect(() => {
     getData();
-    
-    setSortedObject(sortable);
-    checkSortedBy();
-    setSortedBy("sortable");
-    
+    // setSortedObject(sortable);
+    // checkSortedBy();
+    // setSortedBy("sortable");
     
 }, [])
 
@@ -182,7 +180,7 @@ const handleEditIcon = () => {
 }
 
 
-let prodList = Object.values(prodItems);
+let prodList = prodItems ? Object.values(prodItems) : [];
 prodList = prodList.filter(function(item){
   return item.UID == searchVal 
           | item.proName == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
@@ -371,8 +369,8 @@ const checkSortedBy = () => {
                     
                     </Text>
 
-                    <Text><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
-                    <Text><Text style={{color : "black"}}>Masuk: </Text>{item.qtty}</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty}</Text>
                     
                    
                     </View>
@@ -417,8 +415,8 @@ const checkSortedBy = () => {
                                 
                                 </Text>
 
-                                <Text><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
-                                <Text><Text style={{color : "black"}}>Masuk: </Text>{item.qtty}</Text>
+                                <Text style={{color : "grey"}}><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
+                                <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty}</Text>
                                 
                             
                                 </View>
@@ -455,7 +453,7 @@ const checkSortedBy = () => {
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <SubText text={"Detail Barang"} family={'Poppins-med'} size={16} color={'#86827e'} />
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet()}}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 
@@ -485,9 +483,9 @@ const checkSortedBy = () => {
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
                                 <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
                             </View>
                     </View>
                         
@@ -566,7 +564,7 @@ const checkSortedBy = () => {
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <Text style={{fontWeight:"bold", fontSize:20, color:"rgba(rgba(4, 112, 4, 0.77)"}}>Edit Barang</Text>
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet(); setIsEditMode(true)}}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 
@@ -574,11 +572,13 @@ const checkSortedBy = () => {
                     <View style={{ paddingVertical: 16 }}>
                             {/* <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} /> */}
                             <TextInput 
+                            style={{color: "black"}}
                             value={proName}
                             placeholder={prevName.proName}
                             onChangeText={(proName) => {setProName(proName)}}
                             ></TextInput>
                             <TextInput 
+                            style={{color: "black"}}
                             value={proDesc}
                             placeholder={prevName.proDesc}
                             onChangeText={(proDesc) => {setProDesc(proDesc)}}
@@ -587,35 +587,38 @@ const checkSortedBy = () => {
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput 
+                            style={{color: "black"}}
                             value={uniqID}
                             placeholder={prevName.UID}
                             onChangeText={(uniqID) => {setUniqID(uniqID)}}
                             ></TextInput>
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput 
+                            style={{color: "black"}}
                             value={qtty}
                             placeholder={String(prevName.qtty)}
                             onChangeText={(qtty) => {setQtty(qtty)}}
                             keyboardType='numeric'
                             maxLength={9007199254740991}
                             ></TextInput>
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput 
+                            style={{color: "black"}}
                             value={buyRate}
                             placeholder={String(prevName.buyRate)}
                             onChangeText={(buyRate) => {setBuyRate(buyRate)}}
                             keyboardType='numeric'
                             maxLength={9007199254740991}
                             ></TextInput>
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
                             </View>
                     </View>
                         
@@ -889,7 +892,6 @@ const checkSortedBy = () => {
                 
                 
             </TouchableOpacity>
-
             
 
         </View> }

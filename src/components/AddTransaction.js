@@ -53,6 +53,7 @@ const createData = () => {
         buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
         timeMark: prevName.timeMark,
         Exp: prevName.Exp,
+        subbsQtty: "0",
         addedQtty: parseInt(transacIn),
         transactionTimeMark : timeStamp,
         status: "Masuk",
@@ -179,8 +180,8 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     
                     </Text>
 
-                    <Text><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
-                    <Text><Text style={{color : "black"}}>Masuk: </Text>{item.qtty}</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty}</Text>
                     
                    
                     </View>
@@ -191,15 +192,18 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
             )
         }) }
         
+        
+        </ScrollView>
+
         <TouchableOpacity onPress={() => {navigation.navigate("Scan Barcode")}} style={{
             // flex :1,
             backgroundColor: "rgba(2, 104, 120, 0.33)",
             width: 70,
             height: 70,
-            // position: "relative",
-            alignSelf: "flex-end",
-            marginTop: windowHeight -250,
-            margin: 30
+            position: "absolute",
+            // alignSelf: "flex-end",
+            marginTop: windowHeight -170,
+            margin: 20
             
         }}>
             <MaterialCommunityIcons name='barcode-scan' size={45} style={{
@@ -207,8 +211,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                 margin: 10
                 }}/>
         </TouchableOpacity>
-                <Text>yaya</Text>
-        </ScrollView>
+                
         
         {isEditMode ? <Modal
             animationType="slide"
@@ -224,7 +227,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <SubText text={"Detail Barang"} family={'Poppins-med'} size={16} color={'#86827e'} />
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet()}}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 
@@ -254,9 +257,9 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
                                 <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
                             </View>
                     </View>
                         
@@ -330,7 +333,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <Text style={{fontWeight:"bold", fontSize:20, color:"rgba(rgba(4, 112, 4, 0.77)"}}>Transaksi Masuk</Text>
                         <TouchableOpacity onPress={() => {handleCloseBottomSheet(); setIsEditMode(true)}}>
-                        <MaterialCommunityIcons name='close' size={20}></MaterialCommunityIcons>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
                         </TouchableOpacity>
                     </View>
                 
@@ -408,11 +411,11 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
 
         {displayLastTran ? <View style={{
             backgroundColor: "rgba(5, 107, 122, 0.59)",
-            width: windowWidth - 80,
+            width: windowWidth - 100,
             height: 140,
             position: "absolute",
-            marginTop: 100,
-            alignSelf:"center",
+            marginTop: windowHeight - 240,
+            alignSelf:"flex-end",
             padding: 5,
             paddingLeft: 20,
             marginRight: 20,

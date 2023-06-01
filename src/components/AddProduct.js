@@ -92,7 +92,7 @@ export default function AddProduct() {
               set(ref(db, 'products/' + uniqID ), {          
                 UID: uniqID,
                 proName: proName.charAt(0).toUpperCase() + proName.slice(1),
-                qtty: parseInt(qtty),
+                qtty: parseInt(0),
                 proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
                 buyRate: parseInt(buyRate),
                 timeMark: timeStamp,
@@ -208,7 +208,7 @@ export default function AddProduct() {
           maxLength={60}>
       </TextInput>
 
-      <TextInput 
+      {/* <TextInput 
           value={qtty}
           onChangeText={(qtty) => {setQtty(qtty)}}
           placeholder="Kuantitas"
@@ -216,7 +216,7 @@ export default function AddProduct() {
           style={styles.textBoxes}
           keyboardType='numeric'
           maxLength={9007199254740991}>
-      </TextInput>
+      </TextInput> */}
 
       <TextInput
           value={buyRate}
@@ -236,8 +236,8 @@ export default function AddProduct() {
         flexDirection: "row"
 
       }} onPress={() => {setOpen(true)}}> 
-        <MaterialCommunityIcons name='calendar-multiselect' size={40}/>
-        <Text>Pilih tanggal EXPIRED</Text>
+        <MaterialCommunityIcons color={"grey"} name='calendar-multiselect' size={40}/>
+        <Text style={{color: "grey"}}>Pilih tanggal EXPIRED</Text>
         
       </TouchableOpacity>
 
@@ -279,9 +279,9 @@ export default function AddProduct() {
           setUniqID(String(uuid.v4()).slice(0, 13));
         } else if (proName.trim() === ""){
             setTextError('Nama Produk Diperlukan!');
-          } else if (qtty.trim() === "" | NaN){
-            setTextError('Masukan kuantitas!');
-            }  else {
+          }  else if (buyRate.trim() === ""){
+            setBuyRate("0");
+          } else {
                 setTextError(null);
                 createData();
               }
