@@ -26,7 +26,7 @@ export default function MakeBarcode() {
 
     useEffect(() => {
         readData();
-        console.log(prodList)
+        // console.log(prodList)
         
     }, []);
 

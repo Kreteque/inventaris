@@ -10,7 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import uuid from 'react-native-uuid'; 
 
 
-export default function AllTransaction({navigation, props}) {
+export default function AllTransaction({navigation}) {
 
 const [prodItems, setProdItems] = useState([]);
 const [notNull, setNotNull] = useState(true);
@@ -28,12 +28,14 @@ const [transacOut, setTransacOut] = useState("0");
 const [addOrSubb, setAddOrSubb] = useState();
 const [isNull, setIsNull] = useState(false);
 const [isThere, setIsThere] = useState(true);
+const [routeParams, setRouteParams] = useState("");
 const [data, setData] = useState([]);
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const dateStamp = new Date();
 const month = dateStamp.getMonth() + 1;
 const timeStamp = String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
+
 
 
 const readData = () => {
@@ -117,7 +119,7 @@ const similarityChecker = () => {
 
 useEffect(() => {
     readData();
-    console.log(prodItems);
+    // console.log(route);
     // checkStatus();
     if (prodItems ==  null) {
         setIsNull(true);
@@ -191,6 +193,7 @@ const handleOpenBottomSheet = (param) => {
   
   setIsBottomSheetOpen(true);
   setPrevName(param);
+  setRouteParams(prevName.UID);
 
   if (param.addedQtty !== "0") {
     setAddOrSubb(param.addedQtty);
@@ -234,7 +237,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                 mode='outlined' 
                 value={searchVal} 
                 onChangeText={(searchVal) => {setSearchVal(searchVal); setIsSearching(true)}} 
-                placeholder='Cari barang berdasarkan semua properti' 
+                placeholder='Cari barang berdasarkan semua properti barang' 
                 style={styles.specializedTextBox} onBlur={() => {setIsSearching(true)}}>
 
             </TextInput>
@@ -400,13 +403,13 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.transacID} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (TrID)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (TrID)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={addOrSubb} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.status}</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.status}</Text>
                             </View>
 
                             {/* <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -462,11 +465,38 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 <Text style={{
                                     fontWeight: "bold",
                                     color: "rgba(218, 26, 11, 0.8)"
-                                }}>Hapus Trans..</Text>
+                                }}>Hapus Transaksi</Text>
+
+                                </TouchableOpacity> 
+
+                                <TouchableOpacity onPress={() => {
+                                        navigation.navigate("Tambah Transaksi", {
+                                            id : prevName.UID
+                                        }
+                                        );
+                                        handleCloseBottomSheet();
+                                        // setIsEditMode(false);
+                                        }} 
+                                    style={{
+                                    // backgroundColor:"brown",
+                                    width: 100,
+                                    height: 50,
+                                    alignSelf: "flex-end",
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                    alignItems : "center"
+                                    // position: "absolute"
+                                }}>
+                                <MaterialCommunityIcons name='book-plus-multiple' color={"rgba(4, 112, 4, 0.77)"} size={40}/>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    color: "rgba(4, 112, 4, 0.77)"
+                                }}>Tambah Transaksi</Text>
 
                                 </TouchableOpacity> 
                                 
-                                 <TouchableOpacity onPress={() => {setIsEditMode(false)}} style={{
+                                 {/* <TouchableOpacity onPress={() => {setIsEditMode(false)}} style={{
                                     // backgroundColor:"brown",
                                     width: 100,
                                     height: 50,
@@ -504,22 +534,23 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     color : "rgba(218, 26, 11, 0.8)"
                                 }}>Keluar</Text>
 
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </View>
                     </View>
        
                 
 
-        </Modal>: <Modal
+        </Modal>:
+        {/* <Modal
             animationType="fade"
             transparent={true}
-            // We use the state here to toggle visibility of Bottom Sheet 
+            
             visible={isBottomSheetOpen}
-            // We pass our function as default function to close the Modal
+            
             onRequestClose={handleCloseBottomSheet} >
             
                 <View style={[styles.bottomSheet, { height: windowHeight * 0.7 }]}>
-                    {/* //  First Section of Bottom sheet with Header and close button */}
+                    
 
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
                         <Text style={{fontWeight:"bold", fontSize:20, color:"rgba(rgba(4, 112, 4, 0.77)"}}>Transaksi Masuk</Text>
@@ -530,7 +561,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                 
                 
                     <View style={{ paddingVertical: 16 }}>
-                            {/* <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} /> */}
+                            <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} />
                             <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} />
                             <SubText text={prevName.proDesc} family={'Poppins'} color={'#86827e'} size={15} />
                             
@@ -543,7 +574,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
                                 <TextInput 
                                     value={transacIn}
-                                    // placeholder={String(prevName.qtty)}
+                                    placeholder={String(prevName.qtty)}
                                     onChangeText={(transacIn) => {setTransacIn(transacIn)}}
                                     keyboardType='numeric'
                                     maxLength={9007199254740991}
@@ -554,12 +585,12 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     </View>
                         
                             <View style={{
-                                // flex: 1,
+                                
                                 alignSelf:"flex-end",
                                 justifyContent:"center",
                                 width: 150,
                                 height: 150,
-                                // backgroundColor: "grey",
+                                
                                 flexDirection: "row",
                                 position:"absolute",
                                 marginTop: windowHeight - 400
@@ -579,13 +610,13 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 </TouchableOpacity>
                                 
 
-                                {/* <TouchableOpacity>
+                                <TouchableOpacity>
                                     <MaterialCommunityIcons name='plus-circle' style={{
                                         alignSelf:"flex-end",
                                         marginTop:90,
                                         marginLeft:15
                                     }} size={40} color={"rgba(9, 130, 200, 0.8)"} onPress={() => {alert("Mari Menyerah!")}}></MaterialCommunityIcons>
-                                </TouchableOpacity> */}
+                                </TouchableOpacity>
 
                                 <TouchableOpacity>
                                     <MaterialCommunityIcons name='archive-arrow-down' style={{
@@ -599,7 +630,8 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
        
                 
 
-        </Modal>}
+        </Modal> */}
+        }
 
         {!!tranOut && <Modal
             animationType="fade"

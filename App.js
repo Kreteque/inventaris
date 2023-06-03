@@ -122,7 +122,7 @@ function MyStack() {
     <Stack.Navigator>
       <Stack.Screen name="Drawer" component={MyDrawer} options={{ headerShown: false }} />
       <Stack.Screen name='Tambah Produk' component={AddProduct}/>
-      <Stack.Screen name='Tambah Transaksi' component={AddTransaction} />
+      <Stack.Screen name='Tambah Transaksi' component={AddTransaction}  />
       <Stack.Screen name='Buat Barcode' component={MakeBarcode}/>
       <Stack.Screen name='Scan Barcode' component={ScanBarcode}/>
       <Stack.Screen name='Tambah User' component={AddUser}/>
@@ -160,7 +160,7 @@ export default function App({navigation}) {
   useEffect(() => {
     getData();
     // console.log(login);
-    console.log(atributUser.map((item) => item.usrEmail));
+    // console.log(atributUser.map((item) => item.usrEmail));
     
 }, [])
  

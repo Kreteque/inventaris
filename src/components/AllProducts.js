@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, Text, View, Button, TouchableOpacity, Modal, Dimensions } from 'react-native'
 import { useState } from 'react/cjs/react.development';
-import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import {db} from '../database/Config';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter } from "firebase/database";
 import { useEffect } from 'react';
@@ -8,7 +8,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { ButtonGroup } from '@rneui/base';
 import AddProduct from './AddProduct';
 import BottomDrawer from "./BottomDrawer";
-// import { TextInput } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
 
 
@@ -213,7 +213,7 @@ prodSortedByName = prodSortedByName.sort((a, b) => {
     return 0;
   });
 
-console.log(sortedObject);
+// console.log(sortedObject);
 
 
 const checkSortedBy = () => {
@@ -294,7 +294,7 @@ const checkSortedBy = () => {
             <TextInput 
                 blurOnSubmit={true}
                 onChangeText={(searchVal) => {setSearchVal(searchVal); setNotNull(false)}} 
-                placeholder='Cari barang berdasarkan (UID, Nama Produk, dll)' 
+                placeholder= {"Cari barang berdasarkan semua properti barang"} 
                 style={styles.specializedTextBox}
                 >
 
@@ -465,19 +465,19 @@ const checkSortedBy = () => {
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.UID} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.qtty)} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.buyRate)} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -493,7 +493,7 @@ const checkSortedBy = () => {
                                 // flex: 1,
                                 alignSelf:"flex-end",
                                 justifyContent:"center",
-                                width: 150,
+                                width: 200,
                                 height: 150,
                                 // backgroundColor: "grey",
                                 flexDirection: "row",
@@ -545,6 +545,33 @@ const checkSortedBy = () => {
                                         setBuyRate(String(prevName.buyRate));
                                     }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => {
+                                        navigation.navigate("Tambah Transaksi", {
+                                            id : prevName.UID
+                                        }
+                                        );
+                                        handleCloseBottomSheet();
+                                        // setIsEditMode(false);
+                                        }} 
+                                //     style={{
+                                //     width: 100,
+                                //     height: 50,
+                                //     alignSelf: "flex-end",
+                                //     flex: 1,
+                                //     flexDirection: "row",
+                                //     justifyContent: "center",
+                                //     alignItems : "center"
+                                // }}
+                                >
+                                <MaterialCommunityIcons name='book-plus-multiple' color={"rgba(4, 112, 4, 0.77)"} size={40} style={{
+                                    alignSelf:"flex-end",
+                                    marginTop:90,
+                                    marginLeft:15
+                                }}/>
+                                
+
+                                </TouchableOpacity> 
                             </View>
                     </View>
        
@@ -982,14 +1009,15 @@ const styles = StyleSheet.create({
         alignItems: 'center'
       },
       specializedTextBox:{
-        width: '90%', 
-        // height: '10%',
+        width: '100%', 
+        height: 38,
         fontSize: 15,
          padding:5,
          marginBottom : 5,
         // borderColor: 'gray', 
         // borderWidth: 0.2,
          borderRadius: 10,
+        //  color: "grey"
       }
      
 })

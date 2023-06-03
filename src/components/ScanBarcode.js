@@ -6,12 +6,29 @@ import { RNCamera } from 'react-native-camera';
 import { useState } from 'react/cjs/react.development';
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React from 'react'
+import { ref, onValue, query } from "firebase/database";
 
-export default function ScanBarcode() {
+
+export default function ScanBarcode({navigation}) {
+    const [prodItems, setProdItems] = useState([]);
     const [barValue, setBarValue] = useState('')
     const [barType, setBarType] = useState('')
     const [flash, setFlash] = useState(false)
     const [showDialog, setShowDialog] = useState(false)
+    const [dialText, setDialText] = useState('');
+    console.log(barValue);
+
+    // const readData = () => {
+    //     const starCountRef = query(ref(db, 'products/' ));
+    //     onValue(starCountRef, (snapshot) => {
+    //       const data = snapshot.val();
+    //       setProdItems(data);
+    //     //   console.log(data)
+    //     })
+    // }
+
+    // let ProdIdentification = Object.values(prodItems);
+    // ProdIdentification = ProdIdentification.filter((item) => {return item.UID === barValue});
 
     return (
     <View style={styles.container}>
@@ -24,11 +41,12 @@ export default function ScanBarcode() {
             mirrorImage={false}
             // onBarCodeRead={readBarcode}
             onGoogleVisionBarcodesDetected={({ barcodes }) => {
-                console.log(barcodes, barcodes.length)
+                // console.log(barcodes, barcodes.length)
                 if (barcodes.length > 0){
                     setBarValue(barcodes[0].data)
                     setBarType(barcodes[0].format)
-                    setShowDialog(true)
+                    setShowDialog(true);
+                    // readData();
                 }
             }}
             style={{
@@ -64,16 +82,25 @@ export default function ScanBarcode() {
         <Dialog
         isVisible={showDialog}
         onBackdropPress={() => setShowDialog(!showDialog)}>
-            <Dialog.Title titleStyle={{color:'#000', fontSize:25}} title="Scanned Barcode:"/>
+            <Dialog.Title titleStyle={{color:'#000', fontSize:25}} title="Kode barcode discan!:"/>
             <Text style={{color:'#000', fontSize: 20}}>
                 {`Data: ${barValue}\nFormat: ${barType}`}
             </Text>
             <Dialog.Actions>
-                <Dialog.Button title="Scan Again" onPress={() => {
-                    setShowDialog(false)
+                <Dialog.Button title="Lakukan transaksi?" onPress={() => {
+                    navigation.navigate("Tambah Transaksi", {id : barType, txt : dialText});
+                    setShowDialog(false);
                 }}/>
             </Dialog.Actions>
         </Dialog>
+
+        {/* {showDialog ? navigation.navigate("Tambah Transaksi", {
+            id: barValue,
+            text : ""
+        }) : navigation.navigate("Tambah Produk", {
+            id: barValue,
+            text : "??!!"
+        })} */}
     </View>
     );
 }
