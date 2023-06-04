@@ -94,7 +94,7 @@ export default function Dashboard({navigation, props}) {
                   flexDirection : "row",
               }}>
               
-              <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={15} color={item.color}/>{item.status} </Text></Text>
+              <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.status} </Text></Text>
               {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
               </View>
               

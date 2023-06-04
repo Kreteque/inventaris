@@ -19,7 +19,9 @@ const [prevName, setPrevName] = useState([]);
 const [transacIn, setTransacIn] = useState("");
 const [displayLastTran, setDisplayLastTran] = useState(true);
 const [tranOut, setTranOut] = useState("");
+const [tranRet, setTranRet] = useState("");
 const [transacOut, setTransacOut] = useState("0");
+const [transacRet, setTransacRet] = useState("0");
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
@@ -52,7 +54,7 @@ const createData = () => {
         proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
         qtty:  parseInt(prevName.qtty) + parseInt(transacIn),
         proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
+        // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
         timeMark: prevName.timeMark,
         Exp: prevName.Exp,
         subbsQtty: "0",
@@ -60,7 +62,7 @@ const createData = () => {
         transactionTimeMark : timeStamp,
         status: "Masuk",
         icon: "arrow-down-bold-box",
-        color: "rgba(4, 135, 46, 0.68)"
+        color: "rgba(4, 135, 46, 0.68)",
       }).then(() => {
         alert("transaksi ditambah");
         // setIsEditMode(true);
@@ -90,7 +92,7 @@ const createDataOut = () => {
         proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
         qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
         proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
+        // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
         timeMark: prevName.timeMark,
         Exp: prevName.Exp,
         subbsQtty: parseInt(transacOut),
@@ -102,11 +104,45 @@ const createDataOut = () => {
       }).then(() => {
         alert("transaksi ditambah");
         // setIsEditMode(true);
-        setTransacIn("");
+        setTransacOut("");
         
         update(ref(db, 'products/' + prevName.UID), {
             qtty : parseInt(prevName.qtty - parseInt(transacOut))
         });
+      })
+}
+
+
+const createDataRet = () => {
+    
+        
+        
+        
+        
+    set(ref(db, 'transactions/' + trUID ), {    
+        
+        transacID: trUID,   
+        UID: prevName.UID,
+        proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+        qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
+        proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+        // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
+        timeMark: prevName.timeMark,
+        Exp: prevName.Exp,
+        subbsQtty: parseInt(transacOut),
+        addedQtty: "0",
+        transactionTimeMark : timeStamp,
+        status : "Retur",
+        icon: "arrow-u-right-bottom-bold",
+        color: "rgba(243, 134, 0, 0.7)"
+      }).then(() => {
+        alert("transaksi ditambah");
+        // setIsEditMode(true);
+        setTransacRet("");
+        
+        // update(ref(db, 'products/' + prevName.UID), {
+        //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
+        // });
       })
 }
 
@@ -116,7 +152,7 @@ prodList = prodList.filter(function(item){
           | item.proName == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
           | item.proDesc == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
           | item.qtty == searchVal 
-          | item.buyRate == searchVal
+        //   | item.buyRate == searchVal
           | item.Exp == searchVal
           | item.timeMark == searchVal
           | item.updatedTimeMark == searchVal
@@ -306,9 +342,14 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
-                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                            {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.buyRate)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
+                            </View> */}
+
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                                <SubText text={String(prevName.admin)} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (Admin)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -324,7 +365,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 // flex: 1,
                                 alignSelf:"flex-end",
                                 // justifyContent: "space-between",
-                                width: Dimensions.get("screen").width - 250,
+                                width: Dimensions.get("screen").width - 50,
                                 // height: 150,
                                 // backgroundColor: "grey",
                                 flexDirection: "row",
@@ -333,6 +374,25 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 // paddingRight: 15,
                                 
                                 }} >
+
+                                <TouchableOpacity onPress={() => {setTranRet("lol")}} style={{
+                                    // backgroundColor:"brown",
+                                    width: 100,
+                                    height: 50,
+                                    alignSelf: "flex-end",
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                    alignItems : "center"
+                                    // position: "absolute"
+                                }}>
+                                <MaterialCommunityIcons name='arrow-u-down-left-bold' color={"rgba(243, 134, 0, 0.7)"} size={40}/>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    color: "rgba(243, 134, 0, 0.7)"
+                                }}>Retur</Text>
+
+                                </TouchableOpacity>
                                 
                                 <TouchableOpacity onPress={() => {setIsEditMode(false)}} style={{
                                     // backgroundColor:"brown",
@@ -550,6 +610,96 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                         marginTop:90,
                                         marginLeft:15
                                     }} size={40} color={"rgba(136, 8, 4, 0.68)"} onPress={() => {setIsEditMode(true); createDataOut(); handleCloseBottomSheet(); setTranOut("")}}></MaterialCommunityIcons>
+                                </TouchableOpacity>
+                            </View>
+                    </View>
+       
+                
+
+        </Modal>}
+
+        {!!tranRet && <Modal
+            animationType="fade"
+            transparent={true}
+            
+            visible={isBottomSheetOpen}
+            
+            onRequestClose={handleCloseBottomSheet} >
+            
+                <View style={[styles.bottomSheet, { height: windowHeight * 0.7 }]}>
+
+                    <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
+                        <Text style={{fontWeight:"bold", fontSize:20, color:"rgba(243, 134, 0, 0.7)"}}>Transaksi Retur</Text>
+                        <TouchableOpacity onPress={() => {handleCloseBottomSheet(); setIsEditMode(true); setTranRet(""); setTransacRet(""); }}>
+                        <MaterialCommunityIcons color={"grey"} name='close' size={28}></MaterialCommunityIcons>
+                        </TouchableOpacity>
+                    </View>
+                
+                
+                    <View style={{ paddingVertical: 16 }}>
+                            <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} />
+                            <SubText text={prevName.proDesc} family={'Poppins'} color={'#86827e'} size={15} />
+                            
+                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                                <SubText text={prevName.UID} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
+                            </View>
+
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                                <TextInput 
+                                    value={transacRet}
+                                    // placeholder={String(prevName.qtty)}
+                                    onChangeText={(transacRet) => {setTransacRet(transacRet)}}
+                                    keyboardType='numeric'
+                                    maxLength={9007199254740991}
+                                    
+                                ></TextInput>
+                                <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok diretur)</Text>
+                            </View>
+                    </View>
+                        
+                            <View style={{
+                                // flex: 1,
+                                alignSelf:"flex-end",
+                                justifyContent:"center",
+                                width: 150,
+                                height: 150,
+                                // backgroundColor: "grey",
+                                flexDirection: "row",
+                                position:"absolute",
+                                marginTop: windowHeight - 400
+                                }} >
+                                
+                                <TouchableOpacity>
+
+                                    <MaterialCommunityIcons name='cancel' style={{
+                                        alignSelf:"flex-end",
+                                        marginTop:90
+                                    }} size={40} color={"rgba(218, 26, 11, 0.8)"} onPress={() => {
+                                        setIsEditMode(true);
+                                        handleCloseBottomSheet();
+                                        setTranRet("");
+                                        setTransacRet("");
+                                    }}></MaterialCommunityIcons>
+
+                                </TouchableOpacity>
+                                
+
+                                {/* <TouchableOpacity>
+                                    <MaterialCommunityIcons name='plus-circle' style={{
+                                        alignSelf:"flex-end",
+                                        marginTop:90,
+                                        marginLeft:15
+                                    }} size={40} color={"rgba(9, 130, 200, 0.8)"} onPress={() => {alert("Mari Menyerah!")}}></MaterialCommunityIcons>
+                                </TouchableOpacity> */}
+
+                                <TouchableOpacity>
+                                    <MaterialCommunityIcons name='arrow-u-down-left-bold' style={{
+                                        alignSelf:"flex-end",
+                                        marginTop:90,
+                                        marginLeft:15
+                                    }} size={40} color={"rgba(243, 134, 0, 0.7)"} onPress={() => {setIsEditMode(true); createDataRet(); handleCloseBottomSheet(); setTranRet("")}}></MaterialCommunityIcons>
                                 </TouchableOpacity>
                             </View>
                     </View>

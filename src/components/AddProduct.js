@@ -18,7 +18,8 @@ export default function AddProduct() {
   const [proName, setProName] = useState("");
   const [qtty, setQtty] = useState("");
   const [proDesc, setProDesc] = useState("");
-  const [buyRate, setBuyRate] = useState("");
+  const [admin, setAdmin] = useState("");
+  // const [buyRate, setBuyRate] = useState("");
   const [textError, setTextError] = useState();
   const dateStamp = new Date();
   const month = dateStamp.getMonth() + 1;
@@ -94,16 +95,17 @@ export default function AddProduct() {
                 proName: proName.charAt(0).toUpperCase() + proName.slice(1),
                 qtty: parseInt(0),
                 proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
-                buyRate: parseInt(buyRate),
+                // buyRate: parseInt(buyRate),
                 timeMark: timeStamp,
                 Exp: monthToNumber(),
+                admin: admin
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
                 setProName("");
                 setProDesc("");
                 setQtty("");
-                setBuyRate("");
+                // setBuyRate("");
 
                 // alert('data updated!');    
             })  
@@ -163,7 +165,7 @@ export default function AddProduct() {
   
     <View style={styles.container}> 
 
-        {!!textError && (
+        { !!textError && (
           <Text style={{ color: "red" }}>{textError}</Text>
         )}
 
@@ -208,6 +210,15 @@ export default function AddProduct() {
           maxLength={60}>
       </TextInput>
 
+      <TextInput 
+          value={admin}
+          onChangeText={(admin) => {setProDesc(admin)}}
+          placeholder="Admin Harus Diisi!"
+          mode='outlined'
+          style={styles.textBoxes}
+          maxLength={60}>
+      </TextInput>
+
       {/* <TextInput 
           value={qtty}
           onChangeText={(qtty) => {setQtty(qtty)}}
@@ -218,7 +229,7 @@ export default function AddProduct() {
           maxLength={9007199254740991}>
       </TextInput> */}
 
-      <TextInput
+      {/* <TextInput
           value={buyRate}
           onChangeText={(buyRate) => {setBuyRate(buyRate)}}
           placeholder="Harga Beli satuan (kosongkan jika tdk perlu)"
@@ -226,7 +237,7 @@ export default function AddProduct() {
           style={styles.textBoxes}
           keyboardType='numeric'
           maxLength={9007199254740991}>
-      </TextInput>
+      </TextInput> */}
 
       <TouchableOpacity style={{
         // backgroundColor: "green",
@@ -279,9 +290,14 @@ export default function AddProduct() {
           setUniqID(String(uuid.v4()).slice(0, 13));
         } else if (proName.trim() === ""){
             setTextError('Nama Produk Diperlukan!');
-          }  else if (buyRate.trim() === ""){
-            setBuyRate("0");
-          } else {
+          }  else if (admin.trim() === ""){
+            setTextError('Admin pencatat diperlukan!');
+          }  
+          // else if (buyRate.trim() === ""){
+          //   setBuyRate("0");
+          // } 
+          
+          else {
                 setTextError(null);
                 createData();
               }

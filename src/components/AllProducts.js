@@ -28,7 +28,7 @@ export default function AllProducts({navigation, props}) {
     const [proName, setProName] = useState("");
     const [qtty, setQtty] = useState("");
     const [proDesc, setProDesc] = useState("");
-    const [buyRate, setBuyRate] = useState("");
+    // const [buyRate, setBuyRate] = useState("");
     const [collapsedButton, setCollapsedButton] = useState(false);
     const [sortedBy, setSortedBy] = useState("");
     const [searchVal, setSearchVal] = useState("");
@@ -39,7 +39,7 @@ export default function AllProducts({navigation, props}) {
     
 
     let totalQtty = [];
-    let totalBuyRate = [];
+    // let totalBuyRate = [];
     
     
     // let totalProducts = [];
@@ -86,13 +86,13 @@ useEffect(() => {
 const totalCount = Object.values(prodItems);
 totalCount.map((item) => {
     totalQtty.push(item.qtty);
-    totalBuyRate.push(item.buyRate);
+    // totalBuyRate.push(item.buyRate);
     // setSortedObject(item);
     // totalProducts.push(item.UID);
 });
 
-const totBR = totalBuyRate.reduce((a, b) => a + b, 0);
-      let totBRnum = parseInt(totBR);
+// const totBR = totalBuyRate.reduce((a, b) => a + b, 0);
+//       let totBRnum = parseInt(totBR);
 
 const delData = (param) => {
     
@@ -109,7 +109,7 @@ const updateData = () => {
         proName: proName.charAt(0).toUpperCase() + proName.slice(1),
         qtty: parseInt(qtty),
         proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
-        buyRate: parseInt(buyRate),
+        // buyRate: parseInt(buyRate),
         updatedTimeMark: updatedTimeStamp
       }).then(() => {
         
@@ -186,7 +186,7 @@ prodList = prodList.filter(function(item){
           | item.proName == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
           | item.proDesc == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
           | item.qtty == searchVal 
-          | item.buyRate == searchVal;
+        //   | item.buyRate == searchVal;
 });
 
 
@@ -252,9 +252,9 @@ const checkSortedBy = () => {
                     Total Kuantitas 
                 </Text>
 
-                <Text style={styles.infoCardText}>
+                {/* <Text style={styles.infoCardText}>
                     Total Harga beli 
-                </Text>
+                </Text> */}
 
                 <Text style={styles.infoCardText}>
                     Total Jumlah Barang 
@@ -268,8 +268,8 @@ const checkSortedBy = () => {
                     }, 0)}
                     </Text>
 
-                    <Text style={styles.totalText}> : {formatter.format(totBRnum) }
-                    </Text>
+                    {/* <Text style={styles.totalText}> : {formatter.format(totBRnum) }
+                    </Text> */}
 
                     <Text style={styles.totalText}> : {Object.keys(prodItems).length}
                     </Text>
@@ -475,9 +475,14 @@ const checkSortedBy = () => {
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
-                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                            {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.buyRate)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
+                            </View> */}
+
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                                <SubText text={String(prevName.admin)} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (admin)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -542,7 +547,7 @@ const checkSortedBy = () => {
                                         setProName(prevName.proName);
                                         setProDesc(prevName.proDesc);
                                         setQtty(String(prevName.qtty));
-                                        setBuyRate(String(prevName.buyRate));
+                                        // setBuyRate(String(prevName.buyRate));
                                     }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
 
@@ -636,7 +641,7 @@ const checkSortedBy = () => {
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
-                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                            {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput 
                             style={{color: "black"}}
                             value={buyRate}
@@ -646,7 +651,7 @@ const checkSortedBy = () => {
                             maxLength={9007199254740991}
                             ></TextInput>
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
-                            </View>
+                            </View> */}
                     </View>
                         
                             <View style={{
