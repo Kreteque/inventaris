@@ -847,28 +847,7 @@ const checkSortedBy = () => {
                 
             }}>
 
-            <TouchableOpacity  onPress={() => {setCollapsedButton(true)}} style={{
-                backgroundColor: "rgba(39, 36, 98, 0.29)",
-                flexDirection: "row",
-                // alignSelf: "flex-start",
-                width: 55,
-                height: 55,
-                justifyContent: "center",
-                borderRadius: 50,
-                alignItems: "center",
-                // position: "absolute",
-                // opacity: 1,
-                
-                
-                }}>
-                <MaterialCommunityIcons 
-                    name="filter-variant"
-                    size={40}
-                    color={"rgba(39, 36, 98, 0.64)"}
-                    />
-                
-                
-            </TouchableOpacity>
+            
 
             <TouchableOpacity onPress={() => {setCollapsedButton(false); setIsSearching(true)}} style={{
                 backgroundColor: "rgba(39, 36, 98, 0.29)",
@@ -886,6 +865,29 @@ const checkSortedBy = () => {
                     name="layers-search-outline"
                     size={40}
                     color={"rgba(39, 36, 98, 0.64)"}
+                    />
+                
+                
+            </TouchableOpacity>
+
+            <TouchableOpacity  onPress={() => {setCollapsedButton(false); navigation.navigate("Scan Barcode")}} style={{
+                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                flexDirection: "row",
+                // alignSelf: "flex-start",
+                width: 55,
+                height: 55,
+                justifyContent: "center",
+                borderRadius: 50,
+                alignItems: "center",
+                // position: "absolute",
+                // opacity: 1,
+                
+                
+                }}>
+                <MaterialCommunityIcons 
+                    name="barcode-scan"
+                    size={40}
+                    color={"rgba(8, 148, 3, 0.71)"}
                     />
                 
                 

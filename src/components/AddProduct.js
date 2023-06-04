@@ -212,7 +212,7 @@ export default function AddProduct() {
 
       <TextInput 
           value={admin}
-          onChangeText={(admin) => {setProDesc(admin)}}
+          onChangeText={(admin) => {setAdmin(admin)}}
           placeholder="Admin Harus Diisi!"
           mode='outlined'
           style={styles.textBoxes}

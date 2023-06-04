@@ -22,6 +22,8 @@ const [tranOut, setTranOut] = useState("");
 const [tranRet, setTranRet] = useState("");
 const [transacOut, setTransacOut] = useState("0");
 const [transacRet, setTransacRet] = useState("0");
+const [disableTexIn, setDisableTexIn] = useState("0");
+const [prodTran, setProdTran] = useState([]);
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
@@ -48,31 +50,35 @@ const createData = () => {
     // const newKey = push(child(ref(database), 'users')).key;
 
    
-      set(ref(db, 'transactions/' + String(trUID) ), {       
-        transacID: String(trUID),   
-        UID: prevName.UID,
-        proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-        qtty:  parseInt(prevName.qtty) + parseInt(transacIn),
-        proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
-        timeMark: prevName.timeMark,
-        Exp: prevName.Exp,
-        subbsQtty: "0",
-        addedQtty: parseInt(transacIn),
-        transactionTimeMark : timeStamp,
-        status: "Masuk",
-        icon: "arrow-down-bold-box",
-        color: "rgba(4, 135, 46, 0.68)",
-      }).then(() => {
-        alert("transaksi ditambah");
-        // setIsEditMode(true);
-        setTransacIn("");
-        // setSearchVal("");
-
-        update(ref(db, 'products/' + prevName.UID), {
-            qtty : parseInt(prevName.qtty + parseInt(transacIn))
-        });
-      })
+      if (parseInt(transacIn) > 0) {
+        set(ref(db, 'transactions/' + String(trUID) ), {       
+            transacID: String(trUID),   
+            UID: prevName.UID,
+            proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+            qtty:  parseInt(prevName.qtty) + parseInt(transacIn),
+            proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+            // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
+            timeMark: prevName.timeMark,
+            Exp: prevName.Exp,
+            subbsQtty: "0",
+            addedQtty: parseInt(transacIn),
+            transactionTimeMark : timeStamp,
+            status: "Masuk",
+            icon: "arrow-bottom-left-thick",
+            color: "rgba(4, 135, 46, 0.68)",
+          }).then(() => {
+            alert("transaksi ditambah");
+            // setIsEditMode(true);
+            setTransacIn("");
+            // setSearchVal("");
+    
+            update(ref(db, 'products/' + prevName.UID), {
+                qtty : parseInt(prevName.qtty + parseInt(transacIn))
+            });
+          })
+      } else {
+        alert("Tidak dapat menambahkan barang kurang dari 1!")
+      }
     
 
     
@@ -82,68 +88,86 @@ const createData = () => {
 const createDataOut = () => {
     
         
+       if (parseInt(transacOut) > 0 && parseInt(transacOut) < prevName.qtty ) {
+        set(ref(db, 'transactions/' + trUID ), {    
         
-        
-        
-    set(ref(db, 'transactions/' + trUID ), {    
-        
-        transacID: trUID,   
-        UID: prevName.UID,
-        proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-        qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
-        proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
-        timeMark: prevName.timeMark,
-        Exp: prevName.Exp,
-        subbsQtty: parseInt(transacOut),
-        addedQtty: "0",
-        transactionTimeMark : timeStamp,
-        status : "Keluar",
-        icon: "arrow-up-bold-box",
-        color: "rgba(135, 4, 4, 0.68)"
-      }).then(() => {
-        alert("transaksi ditambah");
-        // setIsEditMode(true);
+            transacID: trUID,   
+            UID: prevName.UID,
+            proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+            qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
+            proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+            // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
+            timeMark: prevName.timeMark,
+            Exp: prevName.Exp,
+            subbsQtty: parseInt(transacOut),
+            addedQtty: "0",
+            transactionTimeMark : timeStamp,
+            status : "Keluar",
+            icon: "arrow-top-right-thick",
+            color: "rgba(135, 4, 4, 0.68)"
+          }).then(() => {
+            alert("transaksi ditambah");
+            // setIsEditMode(true);
+            setTransacOut("");
+            
+            update(ref(db, 'products/' + prevName.UID), {
+                qtty : parseInt(prevName.qtty - parseInt(transacOut))
+            });
+          })
+       } else {
+        alert("Jumlah transaksi keluar tidak valid!");
         setTransacOut("");
+       }
         
-        update(ref(db, 'products/' + prevName.UID), {
-            qtty : parseInt(prevName.qtty - parseInt(transacOut))
-        });
-      })
+        
+    
 }
 
 
 const createDataRet = () => {
+
+        const starCountRef = query(ref(db, 'transactions/'));
+        onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        setProdTran(data);
+        });
+        
     
+        let searchTransacOut = prodTran ? Object.values(prodTran) : [];
+        searchTransacOut = searchTransacOut.filter((item) => {return item.UID === prevName.UID});
         
+        if (parseInt(transacRet) > 0 && parseInt(transacRet) <= searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}).reduce((a, b) => {return a+b}, 0)) {
+            set(ref(db, 'transactions/' + trUID ), {    
         
+                transacID: trUID,   
+                UID: prevName.UID,
+                proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+                qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
+                proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+                // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
+                timeMark: prevName.timeMark,
+                Exp: prevName.Exp,
+                subbsQtty: parseInt(transacOut),
+                addedQtty: "0",
+                transactionTimeMark : timeStamp,
+                status : "Retur",
+                icon: "arrow-u-right-bottom-bold",
+                color: "rgba(243, 134, 0, 0.7)"
+              }).then(() => {
+                alert("transaksi ditambah");
+                // setIsEditMode(true);
+                setTransacRet("");
+                
+                // update(ref(db, 'products/' + prevName.UID), {
+                //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
+                // });
+              })
+        } else {
+            alert("Jumlah transaksi retur harus lebih dari 0 dan jumlah transaksi keluar!");
+            console.log();
+        }
         
-        
-    set(ref(db, 'transactions/' + trUID ), {    
-        
-        transacID: trUID,   
-        UID: prevName.UID,
-        proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-        qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
-        proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
-        timeMark: prevName.timeMark,
-        Exp: prevName.Exp,
-        subbsQtty: parseInt(transacOut),
-        addedQtty: "0",
-        transactionTimeMark : timeStamp,
-        status : "Retur",
-        icon: "arrow-u-right-bottom-bold",
-        color: "rgba(243, 134, 0, 0.7)"
-      }).then(() => {
-        alert("transaksi ditambah");
-        // setIsEditMode(true);
-        setTransacRet("");
-        
-        // update(ref(db, 'products/' + prevName.UID), {
-        //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
-        // });
-      })
+    
 }
 
 let prodList = prodItems ?  Object.values(prodItems) : [];
@@ -166,7 +190,7 @@ prodList = prodList.filter(function(item){
 
 useEffect(() => {
     readData();
-    console.log(route.params.id);
+    // console.log(route.params.id);
     if (route.params.id == undefined) {
         setSearchVal("");
         
@@ -180,6 +204,9 @@ const handleOpenBottomSheet = (param) => {
   
   setIsBottomSheetOpen(true);
   setPrevName(param);
+  if (param.qtty > 0) {
+    setDisableTexIn(false);
+  }
 };
 
 const handleCloseBottomSheet = () => {
@@ -557,15 +584,15 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
-                                <TextInput 
+                                { disableTexIn ? <Text style={{color:"red"}}>Masukan barang terlebih dahulu!</Text> : <TextInput 
                                     value={transacOut}
                                     // placeholder={String(prevName.qtty)}
                                     onChangeText={(transacOut) => {setTransacOut(transacOut)}}
                                     keyboardType='numeric'
                                     maxLength={9007199254740991}
                                     
-                                ></TextInput>
-                                <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok keluar)</Text>
+                                ></TextInput>}
+                                { disableTexIn? null : <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok keluar)</Text>}
                             </View>
                     </View>
                         
@@ -609,7 +636,14 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                         alignSelf:"flex-end",
                                         marginTop:90,
                                         marginLeft:15
-                                    }} size={40} color={"rgba(136, 8, 4, 0.68)"} onPress={() => {setIsEditMode(true); createDataOut(); handleCloseBottomSheet(); setTranOut("")}}></MaterialCommunityIcons>
+                                    }} size={40} color={"rgba(136, 8, 4, 0.68)"} onPress={() => {
+
+                                        setIsEditMode(true); 
+                                        createDataOut(); 
+                                        handleCloseBottomSheet(); 
+                                        setTranOut("")
+                                        
+                                        }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
                             </View>
                     </View>
