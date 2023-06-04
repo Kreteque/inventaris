@@ -98,24 +98,24 @@ const createData = () => {
 
 
 
-const similarityChecker = () => {
-    let dataCheck;
+// const similarityChecker = () => {
+//     let dataCheck;
     
     
-        const starCountRef = query(ref(db, 'products/' ));
-        onValue(starCountRef, (snapshot) => {
-          const data = snapshot.val();
-           setData(data);
-        //   console.log(data)
-        });
+//         const starCountRef = query(ref(db, 'products/' ));
+//         onValue(starCountRef, (snapshot) => {
+//           const data = snapshot.val();
+//            setData(data);
+//         //   console.log(data)
+//         });
 
-        let checkData = Object.values(data);
-        let dataToCheck = checkData.map((item) => {return item.UID});
-        dataToCheck = dataToCheck.filter((item) => {return item.UID == prevName.UID});
+//         let checkData = Object.values(data);
+//         let dataToCheck = checkData.map((item) => {return item.UID});
+//         dataToCheck = dataToCheck.filter((item) => {return item.UID == prevName.UID});
 
-        setIsThere(false);
-        return dataCheck;
-}
+//         setIsThere(false);
+//         return dataCheck;
+// }
 
 useEffect(() => {
     readData();

@@ -156,11 +156,12 @@ export default function Dashboard({navigation, props}) {
                     color: "white",
                     position: "absolute",
                     flexDirection: "row",
-                    alignItems: "center"
-                    }}><MaterialCommunityIcons color={"rgba(154, 251, 157, 0.65)"} name='arrow-down-bold-box' size={40}/>
+                    alignItems: "center",
+                    alignSelf: "center"
+                    }}><MaterialCommunityIcons color={"rgba(5, 218, 56, 0.7)"} name='arrow-down-bold-box' size={40}/>
                     <View style={{flexDirection: "column"}}>
-                    <Text style={{fontWeight: "bold", color: "rgba(154, 251, 157, 0.65)"}}>{totalIN.length}</Text>
-                    <Text style={{fontWeight: "bold", color: "rgba(154, 251, 157, 0.65)"}}>TOTAL MASUK</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(5, 218, 56, 0.7)"}}>{totalIN.length}</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(5, 218, 56, 0.7)"}}>Total Masuk</Text>
                     </View>
                   </View>
 
@@ -173,11 +174,12 @@ export default function Dashboard({navigation, props}) {
                     color: "white",
                     position: "absolute",
                     flexDirection: "row",
-                    alignItems: "center"
-                    }}><MaterialCommunityIcons color={"rgba(245, 195, 128, 0.97)"} name='file-table-box' size={40}/>
+                    alignItems: "center",
+                    alignSelf: "center"
+                    }}><MaterialCommunityIcons color={"rgba(211, 139, 0, 0.7)"} name='arrow-u-down-left-bold' size={40}/>
                     <View>
-                    <Text style={{fontWeight: "bold", color: "rgba(245, 195, 128, 0.97)"}}>{ prData ? Object.values(prData).length : 0}</Text>
-                    <Text style={{fontWeight: "bold", color: "rgba(245, 195, 128, 0.97)"}}>TOTAL PRODUK</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(211, 139, 0, 0.7)"}}>{ prData ? Object.values(prData).length : 0}</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(211, 139, 0, 0.7)"}}>Produk Retur</Text>
                     </View>
                   </View>
                 </TouchableRipple>
@@ -188,11 +190,12 @@ export default function Dashboard({navigation, props}) {
                     color: "white",
                     position: "absolute",
                     flexDirection: "row-reverse",
-                    alignItems: "center"
-                    }}><MaterialCommunityIcons color={"rgba(251, 154, 154, 0.65)"} name='arrow-down-bold-box' size={40}/>
+                    alignItems: "center",
+                    alignSelf: "center"
+                    }}><MaterialCommunityIcons color={"rgba(218, 5, 5, 0.7)"} name='arrow-up-bold-box' size={40}/>
                     <View style={{flexDirection: "column"}}>
-                    <Text style={{fontWeight: "bold", color: "rgba(251, 154, 154, 0.65)", alignSelf:"flex-end"}}>{totalOUT.length}</Text>
-                    <Text style={{fontWeight: "bold", color: "rgba(251, 154, 154, 0.65)"}}>TOTAL KELUAR</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(218, 5, 5, 0.7)", alignSelf:"flex-end"}}>{totalOUT.length}</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(218, 5, 5, 0.7)"}}>Total Keluar</Text>
                     </View>
                   </View>
                 </TouchableRipple>
@@ -203,11 +206,12 @@ export default function Dashboard({navigation, props}) {
                     color: "white",
                     position: "absolute",
                     flexDirection: "row-reverse",
-                    alignItems: "center"
-                    }}><MaterialCommunityIcons color={"rgba(251, 244, 154, 0.97)"} name='gauge-low' size={40}/>
+                    alignItems: "center",
+                    alignSelf: "center"
+                    }}><MaterialCommunityIcons color={"rgba(218, 162, 5, 0.7)"} name='gauge-low' size={40}/>
                     <View style={{flexDirection: "column"}}>
-                    <Text style={{fontWeight: "bold", color: "rgba(251, 244, 154, 0.97)", alignSelf: "flex-end"}}>{lowStock.length}</Text>
-                    <Text style={{fontWeight: "bold", color: "rgba(251, 244, 154, 0.97)"}}>STOK RENDAH</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(218, 162, 5, 0.7)", alignSelf: "flex-end"}}>{lowStock.length}</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(218, 162, 5, 0.7)"}}>Stok Rendah</Text>
                     </View>
                   </View>
                 </TouchableRipple>
@@ -266,7 +270,7 @@ const styles = StyleSheet.create({
 
       containerChild : {
          flex: 1,
-         backgroundColor :'rgba(172, 176, 215, 0.65)',
+         backgroundColor :'rgba(222, 229, 255, 0.7)',
         //  height: "30%",
       },
 
@@ -307,7 +311,7 @@ const styles = StyleSheet.create({
       },
 
       dashButtons : {
-        backgroundColor: 'rgba(32, 45, 85, 0.49)',
+        backgroundColor: 'white',
         width: "50%",
         height: 75,
         // borderRadius : 1,

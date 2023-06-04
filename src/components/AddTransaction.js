@@ -110,7 +110,7 @@ const createDataOut = () => {
       })
 }
 
-let prodList = Object.values(prodItems);
+let prodList = prodItems ?  Object.values(prodItems) : [];
 prodList = prodList.filter(function(item){
   return item.UID == searchVal 
           | item.proName == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
