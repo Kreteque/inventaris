@@ -112,7 +112,7 @@ export default function Dashboard({navigation, props}) {
   let totalOUT = trData ? Object.values(trData) : [];
   totalOUT = totalOUT.filter((item) => {return item.status === "Keluar"});
 
-  let lowStock = Object.values(prData);
+  let lowStock = prData ?  Object.values(prData) : [];
   lowStock = lowStock.filter((item) => {return item.qtty <= 5});
 
   let dataUser = Object.values(usrData);
@@ -142,7 +142,7 @@ export default function Dashboard({navigation, props}) {
 
                 <MaterialCommunityIcons name="package" color={'rgba(194, 82, 29, 0.62)'} size={30} />
                 <Text style={styles.productCardTitle}>Produk Tersimpan</Text>
-                <Text style={styles.productTotal}>{totalProduk}</Text>
+                <Text style={styles.productTotal}>{prData ? Object.values(prData).length : 0}</Text>
                 
             </View>
 
@@ -176,7 +176,7 @@ export default function Dashboard({navigation, props}) {
                     alignItems: "center"
                     }}><MaterialCommunityIcons color={"rgba(245, 195, 128, 0.97)"} name='file-table-box' size={40}/>
                     <View>
-                    <Text style={{fontWeight: "bold", color: "rgba(245, 195, 128, 0.97)"}}>{Object.values(prData).length}</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(245, 195, 128, 0.97)"}}>{ prData ? Object.values(prData).length : 0}</Text>
                     <Text style={{fontWeight: "bold", color: "rgba(245, 195, 128, 0.97)"}}>TOTAL PRODUK</Text>
                     </View>
                   </View>
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
       productTotal: {
         marginLeft : '30%',
         alignSelf: 'center',
-        color :'white',
+        color :'rgba(9, 98, 105, 0.58)',
         fontWeight : '700',
         fontSize : 16,
       },
