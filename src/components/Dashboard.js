@@ -255,6 +255,54 @@ export default function Dashboard({navigation, props}) {
           
         </ScrollView> */}
 
+        <TouchableOpacity onPress={() => {}} style={{
+            // flex :1,
+            // backgroundColor: "rgba(22, 125, 203, 0.9)",
+            width: 50,
+            height: 50,
+            position: "absolute",
+            // alignSelf: "flex-end",
+            // marginTop: windowHeight -170,
+            margin: 15,
+            marginLeft: 320
+            
+        }}>
+            <MaterialCommunityIcons color={"rgba(22, 125, 203, 0.9)"} name='account-wrench' size={30} style={{
+                alignSelf:"center",
+                margin: 10
+                }}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => {navigation.navigate("Halaman Bantuan")}} style={{
+                backgroundColor: "rgba(151, 214, 250, 0.5)",
+                flexDirection: "row",
+                alignSelf: "flex-end",
+                width: 80,
+                height: 80,
+                justifyContent: "center",
+                // borderRadius: 50,
+                alignItems: "center",
+                borderTopStartRadius: 50,
+                borderBottomEndRadius: 50,
+                marginTop: 253
+                
+                }}>
+                <MaterialCommunityIcons 
+                    name="lifebuoy"
+                    size={45}
+                    color={"rgba(248, 129, 25, 0.83)"}
+                    style={{
+                        // backgroundColor: "rgba(219, 111, 16, 0.83)",
+                        height: 60,
+                        width: 60,
+                        padding: 5,
+                        borderRadius: 50
+                    }}
+                    />
+                
+                
+            </TouchableOpacity>
+
         </View>
 
         

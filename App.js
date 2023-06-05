@@ -2,18 +2,13 @@ import { StyleSheet, Text, View, Button, Linking, Dimensions, TouchableOpacity }
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import HelpScreen from './src/screens/HelpScreen';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
-import ProductsScreen from './src/screens/ProductsScreen';
-import TransactionsScreen from './src/screens/TransactionsScreen';
-import LowStocksScreen from './src/screens/LowStocksScreen';
-import ProductInScreen from './src/screens/ProductInScreen';
-import ProductOutScreen from './src/screens/ProductOutScreen';
+
 import Dashboard from './src/components/Dashboard';
 import AllProducts from './src/components/AllProducts';
 import AddProduct from './src/components/AddProduct';
@@ -33,13 +28,18 @@ import uuid from 'react-native-uuid';
 import LowStock from './src/components/LowStock';
 import ProductOut from './src/components/ProductOut';
 import ProductIn from './src/components/ProductIn';
+import HelpPage from './src/components/additional/HelpPage';
 
 
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem label="Github" onPress={() => Linking.openURL('https://github.com/Kreteque')} />
+      <DrawerItemList {...props}  />
+      
+        {/* <MaterialCommunityIcons name='github' size={25} color={"red"}/> */}
+      
+      {/* <DrawerItem label="Github" onPress={() => {Linking.openURL('https://github.com/Kreteque')}} />
+      <DrawerItem label="Bantuan" onPress={() => {}} /> */}
     </DrawerContentScrollView>
   );
 }
@@ -101,6 +101,17 @@ function MyDrawer() {
         options={{drawerIcon : () => (
           <MaterialCommunityIcons name="arrow-bottom-left-bold-box-outline" color={'#38761d'}  size={25} />
         )}} />
+        
+
+        {/* <Drawer.Screen name='Github'>
+        <View style={{
+          width: 50,
+          height: 50,
+          backgroundColor: "grey"
+        }}>
+
+        </View>
+        </Drawer.Screen> */}
 
       {/* 
 
@@ -145,6 +156,8 @@ function MyStack() {
       <Stack.Screen name='Buat Barcode' component={MakeBarcode}/>
       <Stack.Screen name='Scan Barcode' component={ScanBarcode}/>
       <Stack.Screen name='Tambah User' component={AddUser}/>
+      <Stack.Screen name='Halaman Bantuan' component={HelpPage}/>
+      
     </Stack.Navigator>
   );
 }
