@@ -28,7 +28,7 @@ export default function AddProduct() {
   const [open, setOpen] = useState(false)
   const windowHeight = Dimensions.get('window').height;
   
-  const timeStamp = String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
+  const timeStamp = "0" + String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
   const searchAndDestroy = String(date).split(' ');
   const monthToNumber = () => {
 

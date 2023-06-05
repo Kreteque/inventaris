@@ -112,6 +112,9 @@ export default function Dashboard({navigation, props}) {
   let totalOUT = trData ? Object.values(trData) : [];
   totalOUT = totalOUT.filter((item) => {return item.status === "Keluar"});
 
+  let totalRET = trData ? Object.values(trData) : [];
+  totalRET = totalRET.filter((item) => {return item.status === "Retur"});
+
   let lowStock = prData ?  Object.values(prData) : [];
   lowStock = lowStock.filter((item) => {return item.qtty <= 5});
 
@@ -178,7 +181,7 @@ export default function Dashboard({navigation, props}) {
                     alignSelf: "center"
                     }}><MaterialCommunityIcons color={"rgba(211, 139, 0, 0.7)"} name='arrow-u-down-left-bold' size={40}/>
                     <View>
-                    <Text style={{fontWeight: "bold", color: "rgba(211, 139, 0, 0.7)"}}>{ prData ? Object.values(prData).length : 0}</Text>
+                    <Text style={{fontWeight: "bold", color: "rgba(211, 139, 0, 0.7)"}}>{ totalRET.length}</Text>
                     <Text style={{fontWeight: "bold", color: "rgba(211, 139, 0, 0.7)"}}>Produk Retur</Text>
                     </View>
                   </View>
@@ -219,7 +222,7 @@ export default function Dashboard({navigation, props}) {
                 
              </View>
 
-             <View style={styles.underText}>
+             {/* <View style={styles.underText}>
                 <TouchableOpacity onPress={() => {navigation.navigate("Semua Transaksi")}}><Text style={{color: "blue"}}>TRANSAKSI TERAKHIR</Text></TouchableOpacity>
                 <TouchableOpacity onPress={() => {navigation.navigate("Semua Transaksi")}}><Text style={{color: "blue"}}>LIHAT SEMUA REKAM{'>>>'}</Text></TouchableOpacity>
              </View>
@@ -250,7 +253,7 @@ export default function Dashboard({navigation, props}) {
         </View> : dataTR
         }
           
-        </ScrollView>
+        </ScrollView> */}
 
         </View>
 

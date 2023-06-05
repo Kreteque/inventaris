@@ -24,6 +24,7 @@ const [transacOut, setTransacOut] = useState("0");
 const [transacRet, setTransacRet] = useState("0");
 const [disableTexIn, setDisableTexIn] = useState("0");
 const [prodTran, setProdTran] = useState([]);
+const [admin, setAdmin] = useState("");
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
@@ -50,7 +51,7 @@ const createData = () => {
     // const newKey = push(child(ref(database), 'users')).key;
 
    
-      if (parseInt(transacIn) > 0) {
+      if (parseInt(transacIn) > 0 && admin !== "") {
         set(ref(db, 'transactions/' + String(trUID) ), {       
             transacID: String(trUID),   
             UID: prevName.UID,
@@ -66,6 +67,7 @@ const createData = () => {
             status: "Masuk",
             icon: "arrow-bottom-left-thick",
             color: "rgba(4, 135, 46, 0.68)",
+            admin: admin
           }).then(() => {
             alert("transaksi ditambah");
             // setIsEditMode(true);
@@ -88,7 +90,7 @@ const createData = () => {
 const createDataOut = () => {
     
         
-       if (parseInt(transacOut) > 0 && parseInt(transacOut) < prevName.qtty ) {
+       if (parseInt(transacOut) > 0 && parseInt(transacOut) < prevName.qtty && admin !== "" ) {
         set(ref(db, 'transactions/' + trUID ), {    
         
             transacID: trUID,   
@@ -104,7 +106,8 @@ const createDataOut = () => {
             transactionTimeMark : timeStamp,
             status : "Keluar",
             icon: "arrow-top-right-thick",
-            color: "rgba(135, 4, 4, 0.68)"
+            color: "rgba(135, 4, 4, 0.68)",
+            admin: admin
           }).then(() => {
             alert("transaksi ditambah");
             // setIsEditMode(true);
@@ -136,7 +139,11 @@ const createDataRet = () => {
         let searchTransacOut = prodTran ? Object.values(prodTran) : [];
         searchTransacOut = searchTransacOut.filter((item) => {return item.UID === prevName.UID});
         
-        if (parseInt(transacRet) > 0 && parseInt(transacRet) <= searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}).reduce((a, b) => {return a+b}, 0)) {
+        if (parseInt(transacRet) > 0 
+        && parseInt(transacRet) <= searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}).reduce((a, b) => {return a+b}, 0)
+        && admin !== ""
+        ) 
+            {
             set(ref(db, 'transactions/' + trUID ), {    
         
                 transacID: trUID,   
@@ -152,7 +159,8 @@ const createDataRet = () => {
                 transactionTimeMark : timeStamp,
                 status : "Retur",
                 icon: "arrow-u-right-bottom-bold",
-                color: "rgba(243, 134, 0, 0.7)"
+                color: "rgba(243, 134, 0, 0.7)",
+                admin: admin
               }).then(() => {
                 alert("transaksi ditambah");
                 // setIsEditMode(true);
@@ -162,10 +170,11 @@ const createDataRet = () => {
                 //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
                 // });
               })
-        } else {
+        } 
+        else {
             alert("Jumlah transaksi retur harus lebih dari 0 dan jumlah transaksi keluar!");
             console.log();
-        }
+        } 
         
     
 }
@@ -317,7 +326,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
 
         <TouchableOpacity onPress={() => {navigation.navigate("Scan Barcode")}} style={{
             // flex :1,
-            backgroundColor: "rgba(2, 104, 120, 0.33)",
+            backgroundColor: "rgba(22, 125, 203, 0.9)",
             width: 70,
             height: 70,
             position: "absolute",
@@ -506,6 +515,17 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 ></TextInput>
                                 <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tambahkan jumlah stok)</Text>
                             </View>
+
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                                <TextInput 
+                                    value={admin}
+                                    // placeholder={String(prevName.qtty)}
+                                    onChangeText={(admin) => {setAdmin(admin)}}
+                                    // keyboardType='numeric'
+                                    maxLength={26}
+                                ></TextInput>
+                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
+                            </View>
                     </View>
                         
                             <View style={{
@@ -546,7 +566,17 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                         alignSelf:"flex-end",
                                         marginTop:90,
                                         marginLeft:15
-                                    }} size={40} color={"rgba(4, 112, 4, 0.77)"} onPress={() => {setIsEditMode(true); createData(); handleCloseBottomSheet()}}></MaterialCommunityIcons>
+                                    }} size={40} color={"rgba(4, 112, 4, 0.77)"} onPress={() => {
+
+                                    if(admin === ""){
+                                        alert("Silakan lengkapi formulir")
+                                    } else {
+                                    setIsEditMode(true); 
+                                    createData(); 
+                                    handleCloseBottomSheet()
+                                    }
+
+                                    }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
                             </View>
                     </View>
@@ -594,6 +624,19 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 ></TextInput>}
                                 { disableTexIn? null : <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok keluar)</Text>}
                             </View>
+
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                                { disableTexIn ? <Text style={{color:"rgba(203, 114, 4, 0.69)"}}>Silakan kembali lalu pilih opsi "Masuk"</Text> : <TextInput 
+                                    value={admin}
+                                    // placeholder={String(prevName.qtty)}
+                                    onChangeText={(admin) => {setAdmin(admin)}}
+                                    // keyboardType='numeric'
+                                    maxLength={26}
+                                    
+                                ></TextInput>}
+                                { disableTexIn? null : <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>}
+                            </View>
+
                     </View>
                         
                             <View style={{
@@ -638,10 +681,14 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                         marginLeft:15
                                     }} size={40} color={"rgba(136, 8, 4, 0.68)"} onPress={() => {
 
-                                        setIsEditMode(true); 
-                                        createDataOut(); 
-                                        handleCloseBottomSheet(); 
-                                        setTranOut("")
+                                        if(admin === ""){
+                                            alert("Silakan lengkapi formulir!")
+                                        } else {
+                                            setIsEditMode(true); 
+                                            createDataOut(); 
+                                            handleCloseBottomSheet(); 
+                                            setTranOut("")
+                                        }
                                         
                                         }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
@@ -691,6 +738,18 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 ></TextInput>
                                 <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok diretur)</Text>
                             </View>
+
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                                <TextInput 
+                                    value={admin}
+                                    // placeholder={String(prevName.qtty)}
+                                    onChangeText={(admin) => {setAdmin(admin)}}
+                                    // keyboardType='numeric'
+                                    maxLength={26}
+                                    
+                                ></TextInput>
+                                <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
+                            </View>
                     </View>
                         
                             <View style={{
@@ -733,7 +792,18 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                         alignSelf:"flex-end",
                                         marginTop:90,
                                         marginLeft:15
-                                    }} size={40} color={"rgba(243, 134, 0, 0.7)"} onPress={() => {setIsEditMode(true); createDataRet(); handleCloseBottomSheet(); setTranRet("")}}></MaterialCommunityIcons>
+                                    }} size={40} color={"rgba(243, 134, 0, 0.7)"} onPress={() => {  
+
+                                    if(admin === ""){
+                                        alert("Silakan lengkapi formulir!")
+                                    } else {
+                                        setIsEditMode(true); 
+                                        createDataRet(); 
+                                        handleCloseBottomSheet(); 
+                                        setTranRet("")
+                                    }
+                                    
+                                    }}></MaterialCommunityIcons>
                                 </TouchableOpacity>
                             </View>
                     </View>

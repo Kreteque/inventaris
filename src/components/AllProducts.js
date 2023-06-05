@@ -34,6 +34,7 @@ export default function AllProducts({navigation, props}) {
     const [searchVal, setSearchVal] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     const [sortedObject, setSortedObject] = useState();
+    const [prodTran, setProdTran] = useState([]);
 
 
     
@@ -95,8 +96,20 @@ totalCount.map((item) => {
 //       let totBRnum = parseInt(totBR);
 
 const delData = (param) => {
+
+        const starCountRef = query(ref(db, 'transactions/'));
+        onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        setProdTran(data);
+        });
+        
     
-    remove(ref(db, 'products/' + param));
+        let searchTransac = prodTran ? Object.values(prodTran) : [];
+        searchTransac = searchTransac.filter((item) => {return item.UID === param});
+        // console.log();
+        remove(ref(db, 'transactions/' + searchTransac.map((item) => {return item.transacID}))).then(() => {
+            remove(ref(db, 'products/' + param))
+    })
     
   }
 
@@ -513,7 +526,7 @@ const checkSortedBy = () => {
                                         alignSelf:"flex-end",
                                         marginTop:90
                                     }} size={40} color={"rgba(218, 26, 11, 0.8)"} onPress={() => {
-                                        Alert.alert(prevName.proName + " akan dihapus!", 'Data akan hilang selamanya!', [
+                                        Alert.alert(prevName.proName + " akan dihapus!", 'Data terkait produk ini (termasuk semua transaksinya) akan hilang selamanya!', [
                                             {
                                                 text: 'Batal',
                                                 onPress: () => console.log('Cancel Pressed'),

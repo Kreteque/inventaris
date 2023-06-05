@@ -30,6 +30,9 @@ import { db } from './src/database/Config';
 import { TextInput } from 'react-native-gesture-handler';
 import AddUser from './src/components/AddUser';
 import uuid from 'react-native-uuid';
+import LowStock from './src/components/LowStock';
+import ProductOut from './src/components/ProductOut';
+import ProductIn from './src/components/ProductIn';
 
 
 function CustomDrawerContent(props) {
@@ -61,29 +64,45 @@ function MyDrawer() {
         name="Dashboard"
         component={Dashboard}
         options={{drawerIcon : () => (
-          <MaterialCommunityIcons name="view-dashboard" color={'#0b5394'} size={15} Padding={0} />
+          <MaterialCommunityIcons name="view-dashboard" color={'#0b5394'} size={25} Padding={0} />
         )}} />
 
       <Drawer.Screen 
         name="Semua Produk"
         component={AllProducts}
         options={{drawerIcon : () => (
-          <MaterialCommunityIcons name="package-variant" color={'#e69138'} size={15} />
+          <MaterialCommunityIcons name="package-variant" color={'rgba(211, 121, 8, 0.69)'} size={25} />
       )}} />
 
       <Drawer.Screen 
         name="Semua Transaksi"
         component={AllTransaction}
         options={{drawerIcon : () => (
-          <MaterialCommunityIcons name="file-document-multiple-outline" color={'#38761d'} size={15} />
+          <MaterialCommunityIcons name="file-document-multiple-outline" color={'#38761d'} size={25} />
       )}} />
 
-      {/* <Drawer.Screen
+      <Drawer.Screen
         name="Stok Rendah"
-        component={LowStocksScreen}
+        component={LowStock}
         options={{drawerIcon : () => (
-          <MaterialCommunityIcons name="package-down" color={'#f82222'}  size={15} />
+          <MaterialCommunityIcons name="gauge-low" color={'rgba(247, 140, 54, 0.93)'}  size={25} />
         )}} />
+
+      <Drawer.Screen
+        name="Transaksi Keluar"
+        component={ProductOut}
+        options={{drawerIcon : () => (
+          <MaterialCommunityIcons name="arrow-top-right-bold-box-outline" color={'#f82222'}  size={25} />
+        )}} />
+
+      <Drawer.Screen
+        name="Transaksi Masuk"
+        component={ProductIn}
+        options={{drawerIcon : () => (
+          <MaterialCommunityIcons name="arrow-bottom-left-bold-box-outline" color={'#38761d'}  size={25} />
+        )}} />
+
+      {/* 
 
       <Drawer.Screen
         name="Produk Masuk"

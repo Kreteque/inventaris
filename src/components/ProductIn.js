@@ -10,7 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import uuid from 'react-native-uuid'; 
 
 
-export default function AllTransaction({navigation}) {
+export default function ProductIn({navigation}) {
 
 const [prodItems, setProdItems] = useState([]);
 const [notNull, setNotNull] = useState(true);
@@ -61,40 +61,6 @@ const trUID = transacID();
 
 
 
-const createData = () => {
-    
-    // const newKey = push(child(ref(database), 'users')).key;
-
-   
-      set(ref(db, 'transactions/' + trUID ), {       
-        transacID: trUID,   
-        UID: prevName.UID,
-        proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-        qtty:  parseInt(prevName.qtty) + parseInt(transacIn),
-        proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
-        timeMark: prevName.timeMark,
-        Exp: prevName.Exp,
-        subbsQtty: "0",
-        addedQtty: parseInt(transacIn),
-        transactionTimeMark : timeStamp,
-        status: "Masuk",
-        icon: "arrow-down-bold-box",
-        color: "rgba(4, 135, 46, 0.68)"
-      }).then(() => {
-        alert("transaksi ditambah");
-        // setIsEditMode(true);
-        setTransacIn("");
-        
-        update(ref(db, 'products/' + prevName.UID), {
-            qtty : parseInt(prevName.qtty + parseInt(transacIn))
-        });
-      })
-    
-      
-    
-      
-}
 
 
 
@@ -164,18 +130,7 @@ const createDataOut = () => {
 }
 
 
-let prodList = prodItems ? Object.values(prodItems) : [];
-prodList = prodList.filter(function(item){
-  return item.UID == searchVal 
-          | item.proName == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
-          | item.proDesc == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
-          | item.qtty == searchVal 
-        //   | item.buyRate == searchVal
-          | item.Exp == searchVal
-          | item.timeMark == searchVal
-          | item.updatedTimeMark == searchVal
-          | item.transacID == searchVal
-})
+
 // .map(function({id, name, city}){
 //    return {id, name, city};
 // });
@@ -184,7 +139,22 @@ prodList = prodList.filter(function(item){
 const sortedTrList = prodItems ? Object.values(prodItems): [];
 const sortedByAz = sortedTrList.sort((a,b) => {
     return b.qtty - a.qtty;
-});
+}).filter((item) => {return item.status === "Masuk"});
+
+let prodList = sortedByAz;
+prodList = prodList.filter(function(item){
+  return item.UID == searchVal 
+          | item.proName == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
+          | item.proDesc == searchVal.charAt(0).toUpperCase() + item.proName.slice(1) 
+          | item.qtty == searchVal 
+          | item.buyRate == searchVal
+          | item.Exp == searchVal
+          | item.timeMark == searchVal
+          | item.updatedTimeMark == searchVal
+          | item.transacID == searchVal
+})
+
+console.log(sortedByAz);
 
 
 
@@ -268,7 +238,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     <View style={{
                         width: 56,
                         height: "100%",
-                        backgroundColor: "rgba(9, 138, 4, 0.7)",
+                        backgroundColor: "rgba(0, 145, 35, 0.69)",
                         marginRight: 10,
                         borderRadius: 50
                     }}>
@@ -291,8 +261,15 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     
                     </Text>
 
-                    <Text><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
-                    <Text><Text style={{color : "black"}}> </Text>{item.qtty}</Text>
+                    <Text><Text style={{color : "black"}}>TrID:</Text> ({item.transacID.toUpperCase()})</Text>
+
+                    <View style={{
+                        flexDirection : "row",
+                    }}>
+                    
+                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.status} </Text></Text>
+                    {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
+                    </View>
                     
                    
                     </View>
