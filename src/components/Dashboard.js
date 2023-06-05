@@ -118,11 +118,11 @@ export default function Dashboard({navigation, props}) {
   let lowStock = prData ?  Object.values(prData) : [];
   lowStock = lowStock.filter((item) => {return item.qtty <= 5});
 
-  let dataUser = Object.values(usrData);
+  let dataUser = usrData ? Object.values(usrData) : [];
   let companyName = dataUser.map((item) => {return item.compName});
   let companyLocation = dataUser.map((item) => {return item.location});
-
-  // console.log(companyName, companyLocation);
+  let idUsr = dataUser.map((item) => {return item.usrID});
+  // console.log(idUsr);
   return (
     <View style={[styles.container]}>
         
@@ -153,7 +153,7 @@ export default function Dashboard({navigation, props}) {
 
              
                 {/* <Button style={styles.dashButtons} onPress={() => Alert.alert('TOTAL MASUK')} title='TOTAL MASUK'>TOTAL MASUK</Button> */}
-                <TouchableRipple style={styles.dashButtons} onPress={() => Alert.alert('TOTAL MASUK')} rippleColor="rgba(238, 238, 238, .128)" >
+                <TouchableRipple style={styles.dashButtons} onPress={() => {navigation.navigate("Transaksi Masuk")}} rippleColor="rgba(238, 238, 238, .128)" >
                   <View style={{
                     fontWeight: "bold", 
                     color: "white",
@@ -187,7 +187,7 @@ export default function Dashboard({navigation, props}) {
                   </View>
                 </TouchableRipple>
 
-                <TouchableRipple style={styles.dashButtons} onPress={() => Alert.alert('TOTAL KELUAR')} rippleColor="rgba(238, 238, 238, .128)" >
+                <TouchableRipple style={styles.dashButtons} onPress={() => {navigation.navigate("Transaksi Keluar")}} rippleColor="rgba(238, 238, 238, .128)" >
                 <View style={{
                     fontWeight: "bold", 
                     color: "white",
@@ -203,7 +203,7 @@ export default function Dashboard({navigation, props}) {
                   </View>
                 </TouchableRipple>
 
-                <TouchableRipple style={styles.dashButtons} onPress={() => Alert.alert('STOK RENDAH')} rippleColor="rgba(238, 238, 238, .128)" >
+                <TouchableRipple style={styles.dashButtons} onPress={() => {navigation.navigate("Stok Rendah")}} rippleColor="rgba(238, 238, 238, .128)" >
                 <View style={{
                     fontWeight: "bold", 
                     color: "white",
@@ -255,7 +255,7 @@ export default function Dashboard({navigation, props}) {
           
         </ScrollView> */}
 
-        <TouchableOpacity onPress={() => {}} style={{
+        <TouchableOpacity onPress={() => {navigation.navigate("Pengaturan Pengguna", {id : idUsr})}} style={{
             // flex :1,
             // backgroundColor: "rgba(22, 125, 203, 0.9)",
             width: 50,
@@ -273,7 +273,7 @@ export default function Dashboard({navigation, props}) {
                 }}/>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {navigation.navigate("Halaman Bantuan")}} style={{
+        {/* <TouchableOpacity onPress={() => {navigation.navigate("Halaman Bantuan")}} style={{
                 backgroundColor: "rgba(151, 214, 250, 0.5)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
@@ -301,7 +301,7 @@ export default function Dashboard({navigation, props}) {
                     />
                 
                 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
         </View>
 

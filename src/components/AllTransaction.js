@@ -61,40 +61,41 @@ const trUID = transacID();
 
 
 
-const createData = () => {
+// const createData = () => {
     
-    // const newKey = push(child(ref(database), 'users')).key;
+//     // const newKey = push(child(ref(database), 'users')).key;
 
    
-      set(ref(db, 'transactions/' + trUID ), {       
-        transacID: trUID,   
-        UID: prevName.UID,
-        proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-        qtty:  parseInt(prevName.qtty) + parseInt(transacIn),
-        proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-        // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
-        timeMark: prevName.timeMark,
-        Exp: prevName.Exp,
-        subbsQtty: "0",
-        addedQtty: parseInt(transacIn),
-        transactionTimeMark : timeStamp,
-        status: "Masuk",
-        icon: "arrow-down-bold-box",
-        color: "rgba(4, 135, 46, 0.68)"
-      }).then(() => {
-        alert("transaksi ditambah");
-        // setIsEditMode(true);
-        setTransacIn("");
+//       set(ref(db, 'transactions/' + trUID ), {       
+//         transacID: trUID,   
+//         UID: prevName.UID,
+//         proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+//         qtty:  parseInt(prevName.qtty) + parseInt(transacIn),
+//         proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+//         // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
+//         timeMark: prevName.timeMark,
+//         Exp: prevName.Exp,
+//         subbsQtty: 0,
+//         addedQtty: parseInt(transacIn),
+//         retQtty: parseInt(transacRet),
+//         transactionTimeMark : timeStamp,
+//         status: "Masuk",
+//         icon: "arrow-down-bold-box",
+//         color: "rgba(4, 135, 46, 0.68)"
+//       }).then(() => {
+//         alert("transaksi ditambah");
+//         // setIsEditMode(true);
+//         setTransacIn("");
         
-        update(ref(db, 'products/' + prevName.UID), {
-            qtty : parseInt(prevName.qtty + parseInt(transacIn))
-        });
-      })
+//         update(ref(db, 'products/' + prevName.UID), {
+//             qtty : parseInt(prevName.qtty + parseInt(transacIn))
+//         });
+//       })
     
       
     
       
-}
+// }
 
 
 
@@ -128,40 +129,40 @@ useEffect(() => {
     } 
 }, []);
 
-const createDataOut = () => {
+// const createDataOut = () => {
     
         
         
         
         
-            set(ref(db, 'transactions/' + trUID ), {    
+//             set(ref(db, 'transactions/' + trUID ), {    
                 
-                transacID: trUID,   
-                UID: prevName.UID,
-                proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-                qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
-                proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-                // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
-                timeMark: prevName.timeMark,
-                Exp: prevName.Exp,
-                subbsQtty: parseInt(transacOut),
-                addedQtty: "0",
-                transactionTimeMark : timeStamp,
-                status : "Keluar",
-                icon: "arrow-up-bold-box",
-                color: "rgba(135, 4, 4, 0.68)"
-              }).then(() => {
-                alert("transaksi ditambah");
-                // setIsEditMode(true);
-                setTransacIn("");
+//                 transacID: trUID,   
+//                 UID: prevName.UID,
+//                 proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+//                 qtty:  parseInt(prevName.qtty) - parseInt(transacOut),
+//                 proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+//                 // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
+//                 timeMark: prevName.timeMark,
+//                 Exp: prevName.Exp,
+//                 subbsQtty: parseInt(transacOut),
+//                 addedQtty: "0",
+//                 transactionTimeMark : timeStamp,
+//                 status : "Keluar",
+//                 icon: "arrow-up-bold-box",
+//                 color: "rgba(135, 4, 4, 0.68)"
+//               }).then(() => {
+//                 alert("transaksi ditambah");
+//                 // setIsEditMode(true);
+//                 setTransacIn("");
                 
-                update(ref(db, 'products/' + prevName.UID), {
-                    qtty : parseInt(prevName.qtty - parseInt(transacOut))
-                });
-              })
+//                 update(ref(db, 'products/' + prevName.UID), {
+//                     qtty : parseInt(prevName.qtty - parseInt(transacOut))
+//                 });
+//               })
               
             
-}
+// }
 
 
 let prodList = prodItems ? Object.values(prodItems) : [];
@@ -195,11 +196,11 @@ const handleOpenBottomSheet = (param) => {
   setPrevName(param);
   setRouteParams(prevName.UID);
 
-  if (param.addedQtty !== "0") {
-    setAddOrSubb(param.addedQtty);
-  } else {
-    setAddOrSubb(param.subbsQtty);
-  }
+//   if (param.addedQtty !== "0") {
+//     setAddOrSubb(param.addedQtty);
+//   } else {
+//     setAddOrSubb(param.subbsQtty);
+//   }
 };
 
 const handleCloseBottomSheet = () => {
@@ -409,11 +410,11 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={addOrSubb} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.status}</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/>  {prevName.status}</Text>
                             </View>
 
-                            {/* <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
-                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.buyRate)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text color={'#86827e'} size={14} family={'Poppins-med'}> (harga beli)</Text>
                             </View> */}

@@ -23,12 +23,13 @@ import { ref, set, update, onValue, remove, push, child, database, getDatabase, 
 import { useEffect } from 'react';
 import { db } from './src/database/Config';
 import { TextInput } from 'react-native-gesture-handler';
-import AddUser from './src/components/AddUser';
+import UserConfig from './src/components/UserConfig';
 import uuid from 'react-native-uuid';
 import LowStock from './src/components/LowStock';
 import ProductOut from './src/components/ProductOut';
 import ProductIn from './src/components/ProductIn';
 import HelpPage from './src/components/additional/HelpPage';
+import Returnproduct from './src/components/ReturnProduct';
 
 
 function CustomDrawerContent(props) {
@@ -101,6 +102,13 @@ function MyDrawer() {
         options={{drawerIcon : () => (
           <MaterialCommunityIcons name="arrow-bottom-left-bold-box-outline" color={'#38761d'}  size={25} />
         )}} />
+
+      <Drawer.Screen
+        name="Produk Retur"
+        component={Returnproduct}
+        options={{drawerIcon : () => (
+          <MaterialCommunityIcons name="arrow-u-right-bottom-bold" color={'rgba(200, 165, 0, 0.83)'}  size={25} />
+        )}} />
         
 
         {/* <Drawer.Screen name='Github'>
@@ -155,7 +163,7 @@ function MyStack() {
       <Stack.Screen name='Tambah Transaksi' component={AddTransaction}  />
       <Stack.Screen name='Buat Barcode' component={MakeBarcode}/>
       <Stack.Screen name='Scan Barcode' component={ScanBarcode}/>
-      <Stack.Screen name='Tambah User' component={AddUser}/>
+      <Stack.Screen name='Pengaturan Pengguna' component={UserConfig}/>
       <Stack.Screen name='Halaman Bantuan' component={HelpPage}/>
       
     </Stack.Navigator>
