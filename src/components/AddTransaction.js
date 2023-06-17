@@ -2,9 +2,9 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, Modal
 import React from 'react'
 // import { TextInput } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
-import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter, equalTo } from "firebase/database";
+import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter, equalTo, get } from "firebase/database";
 import {db} from '../database/Config';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import uuid from 'react-native-uuid'; 
@@ -23,14 +23,27 @@ const [tranRet, setTranRet] = useState("");
 const [transacOut, setTransacOut] = useState("0");
 const [transacRet, setTransacRet] = useState("0");
 const [disableTexIn, setDisableTexIn] = useState("0");
-const [prodTran, setProdTran] = useState([]);
+const [trData, setTrData] = useState([]);
 const [admin, setAdmin] = useState("");
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const dateStamp = new Date();
 const month = dateStamp.getMonth() + 1;
-const timeStamp = "0" + String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
+const timeStamp = String(dateStamp.getDate() + "/" + month + "/" + dateStamp.getFullYear());
+
+useEffect(() => {
+    readData();
+    getTrData();
+    // console.log(route.params);
+    if (route.params.id == undefined) {
+        setSearchVal("");
+        
+    } else {
+        setSearchVal(route.params.id);
+    }
+}, []);
+
 
 const readData = () => {
     const starCountRef = query(ref(db, 'products'));
@@ -38,7 +51,31 @@ const readData = () => {
       const data = snapshot.val();
       setProdItems(data);
     });
+
+    
 }
+
+const getTrData = () => {
+    const starCountRef = query(ref(db, 'transactions'));
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      setTrData(data);
+      
+    })
+  }
+
+  let totalOUT = trData ? Object.values(trData) : [];
+  totalOUT = totalOUT.filter((item) => {return item.status === "Keluar"});
+
+  console.log(totalOUT);
+// const readTrData = () => {
+//     const prodCount = get(ref(db, 'transactions'));
+//         onValue(prodCount, (snapshot) => {
+//         const data = snapshot.val();
+//         setProdTran(data);
+//         });
+// }
+
 
 const transacID = () => {
     const trID = timeStamp.replace(/\//g, '') + "-" + String(uuid.v4()).slice(32 );
@@ -61,9 +98,9 @@ const createData = () => {
             // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
             timeMark: prevName.timeMark,
             Exp: prevName.Exp,
-            subbsQtty: 0,
-            addedQtty: parseInt(transacIn),
-            retQtty: 0,
+            
+            trQtty: parseInt(transacIn),
+            addedQtty : parseInt(transacIn),
             transactionTimeMark : timeStamp,
             status: "Masuk",
             icon: "arrow-bottom-left-thick",
@@ -74,13 +111,15 @@ const createData = () => {
             // setIsEditMode(true);
             setTransacIn("");
             // setSearchVal("");
+            setTranRet('');
     
             update(ref(db, 'products/' + prevName.UID), {
                 qtty : parseInt(prevName.qtty + parseInt(transacIn))
             });
           })
       } else {
-        alert("Tidak dapat menambahkan barang kurang dari 1!")
+        alert("Tidak dapat menambahkan barang kurang dari 1!");
+        setTranRet('');
       }
     
 
@@ -102,9 +141,8 @@ const createDataOut = () => {
             // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
             timeMark: prevName.timeMark,
             Exp: prevName.Exp,
+            trQtty: parseInt(transacOut),
             subbsQtty: parseInt(transacOut),
-            addedQtty: 0,
-            retQtty: 0,
             transactionTimeMark : timeStamp,
             status : "Keluar",
             icon: "arrow-top-right-thick",
@@ -128,55 +166,90 @@ const createDataOut = () => {
     
 }
 
+// console.log(Object.values(prodTran).filter((item) => {return item.UID === prevName.UID}));
+// console.log(searchVal)
 
+// const searchTransacOut = Object.values(prodTran);
+// const takeTheSubbs = searchTransacOut.filter((item) => {return item.subbsQtty !== undefined});
+const extractedArr = totalOUT.map((item) => {return item.subbsQtty});
+
+const prodOutVal = extractedArr.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+
+  console.log(prodOutVal);
 const createDataRet = () => {
 
-        const starCountRef = query(ref(db, 'transactions/'));
-        onValue(starCountRef, (snapshot) => {
-        const data = snapshot.val();
-        setProdTran(data);
-        });
-        
+    const extractedArr = totalOUT.map((item) => {return item.subbsQtty});
+
+    const prodOutVal = extractedArr.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
     
-        let searchTransacOut = prodTran ? Object.values(prodTran) : [];
-        searchTransacOut = searchTransacOut.filter((item) => {return item.UID === prevName.UID});
+      console.log(prodOutVal);
+
+            // console.log(prodOutVal)
+
+
+// //     const searchTransacOut = Object.values(prodTran);
+// //     const takeTheSubbs = searchTransacOut.filter((item) => {return item.subbsQtty !== undefined});
+// //     const extractedArr = takeTheSubbs.map((item) => {return item.subbsQtty});
+
+// //     const prodOutVal = extractedArr.reduce(
+// //     (accumulator, currentValue) => accumulator + currentValue,
+// //     0
+// //   );
+
+       
         
-        if (parseInt(transacRet) > 0 
-        && parseInt(transacRet) <= searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}).reduce((a, b) => {return a+b}, 0)
-        && admin !== ""
-        ) 
-            {
-            set(ref(db, 'transactions/' + trUID ), {    
+//         // console.log(prevName);
+//         // searchTransacOut = searchTransacOut.filter((item) => {return item.status === "Keluar"});
+//         // let totalQttyOut =searchTransacOut.map((item) => {return parseInt(item.subbsQtty)});
+//         // console.log(searchTransacOut.map((item) => {return item.subbsQtty}));
         
-                transacID: trUID,   
-                UID: prevName.UID,
-                proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-                qtty:  0,
-                proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
-                // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
-                timeMark: prevName.timeMark,
-                Exp: prevName.Exp,
-                subbsQtty: 0,
-                addedQtty: 0,
-                retQtty: parseInt(transacRet),
-                transactionTimeMark : timeStamp,
-                status : "Retur",
-                icon: "arrow-u-right-bottom-bold",
-                color: "rgba(243, 134, 0, 0.7)",
-                admin: admin
-              }).then(() => {
-                alert("transaksi ditambah");
-                // setIsEditMode(true);
-                setTransacRet("");
-                
-                // update(ref(db, 'products/' + prevName.UID), {
-                //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
-                // });
-              })
+        if (parseInt(transacRet) < prodOutVal ){
+            // console.log(searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}))
+            if (parseInt(transacRet) < 0) {
+                setTransacRet(NaN);
+                alert("Jumlah transaksi retur harus lebih dari 0 dan jumlah transaksi keluar!");
+            } else{
+                set(ref(db, 'transactions/' + trUID ), {    
+        
+                    transacID: trUID,   
+                    UID: prevName.UID,
+                    proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
+                    qtty:  0,
+                    proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
+                    // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
+                    timeMark: prevName.timeMark,
+                    Exp: prevName.Exp,
+                    
+                    
+                    trQtty: parseInt(transacRet),
+                    qttyOnhold :parseInt(transacRet),
+                    transactionTimeMark : timeStamp,
+                    status : "Retur",
+                    icon: "arrow-u-right-bottom-bold",
+                    color: "rgba(243, 134, 0, 0.7)",
+                    admin: admin
+                  }).then(() => {
+                    alert("transaksi ditambah");
+                    // setIsEditMode(true);
+                    setTransacRet("");
+                    
+                    // update(ref(db, 'products/' + prevName.UID), {
+                    //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
+                    // });
+                  })
+            }
+            
+            
         } 
         else {
             alert("Jumlah transaksi retur harus lebih dari 0 dan jumlah transaksi keluar!");
-            console.log();
+            // console.log();
         } 
         
     
@@ -200,16 +273,7 @@ prodList = prodList.filter(function(item){
 
 
 
-useEffect(() => {
-    readData();
-    // console.log(route.params.id);
-    if (route.params.id == undefined) {
-        setSearchVal("");
-        
-    } else {
-        setSearchVal(route.params.id);
-    }
-}, []);
+
 
 const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 const handleOpenBottomSheet = (param) => {
@@ -516,7 +580,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (tambahkan jumlah stok)</Text>
+                                <Text style={{color : "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tambahkan jumlah stok)</Text>
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
@@ -527,7 +591,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     // keyboardType='numeric'
                                     maxLength={26}
                                 ></TextInput>
-                                <Text color={'#86827e'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
+                                <Text style={{color : "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
                             </View>
                     </View>
                         
@@ -625,7 +689,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>}
-                                { disableTexIn? null : <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok keluar)</Text>}
+                                { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok keluar)</Text>}
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
@@ -637,7 +701,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={26}
                                     
                                 ></TextInput>}
-                                { disableTexIn? null : <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>}
+                                { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>}
                             </View>
 
                     </View>
@@ -739,7 +803,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>
-                                <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok diretur)</Text>
+                                <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok diretur)</Text>
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
@@ -751,7 +815,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={26}
                                     
                                 ></TextInput>
-                                <Text color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
+                                <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
                             </View>
                     </View>
                         

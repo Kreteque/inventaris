@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { ref, set, update, onValue, remove } from "firebase/database";
 import { db } from '../database/Config';
 import uuid from 'react-native-uuid';

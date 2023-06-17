@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter, equalTo } from "firebase/database";
 import {db} from '../database/Config';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import uuid from 'react-native-uuid'; 
@@ -34,7 +34,7 @@ const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const dateStamp = new Date();
 const month = dateStamp.getMonth() + 1;
-const timeStamp = String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
+const timeStamp = String(dateStamp.getDate() + "/" + month + "/" + dateStamp.getFullYear());
 
 
 
@@ -355,7 +355,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                         flexDirection : "row",
                     }}>
                     
-                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.status} </Text></Text>
+                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.status} </Text></Text>
                     {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
                     </View>
                     
@@ -410,7 +410,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={addOrSubb} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/>  {prevName.status}</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.trQtty}  {prevName.status}</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -477,7 +477,8 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
 
                                 <TouchableOpacity onPress={() => {
                                         navigation.navigate("Tambah Transaksi", {
-                                            id : prevName.UID
+                                            id : prevName.UID,
+                                            
                                         }
                                         );
                                         handleCloseBottomSheet();

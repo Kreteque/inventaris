@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter, equalTo } from "firebase/database";
 import {db} from '../database/Config';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import uuid from 'react-native-uuid'; 
@@ -60,7 +60,13 @@ const transacID = () => {
 const trUID = transacID();
 
 
-
+const updateProdQtty = (uid, quantity, onHold, tr ) => {
+    update(ref(db, 'products/' + uid), {
+        qtty: quantity += onHold
+    }).then(() => {
+        delData(tr);
+    })
+}
 
 
 
@@ -267,7 +273,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                         flexDirection : "row",
                     }}>
                     
-                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.status} </Text></Text>
+                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.status} </Text></Text>
                     {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
                     </View>
                     
@@ -331,7 +337,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                         flexDirection : "row",
                     }}>
                     
-                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.status} </Text></Text>
+                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.status} </Text></Text>
                     {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
                     </View>
                     
@@ -386,7 +392,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={addOrSubb} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.status}</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/>{prevName.trQtty} {prevName.status}</Text>
                             </View>
 
                             {/* <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -423,7 +429,35 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 
                                 }} >
 
-                                {/* <TouchableOpacity onPress={() => {
+                                <TouchableOpacity onPress={() => {
+                                    Alert.alert(prevName.qttyOnhold + " barang " + " akan ditambahkan ke stok produk",  'anda yakin?', [
+                                            {
+                                                text: 'Batal',
+                                                
+                                                style: 'cancel',
+                                            },
+                                            {text: 'Re-stok', onPress: () => {updateProdQtty(prevName.UID, prevName.trQtty, prevName.qttyOnhold, prevName.transacID.toLowerCase()); handleCloseBottomSheet();}},
+                                            ]);
+                                }} style={{
+                                    // backgroundColor:"brown",
+                                    // width: 100,
+                                    height: 50,
+                                    alignSelf: "flex-end",
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                    alignItems : "center"
+                                    // position: "absolute"
+                                }}>
+                                <MaterialCommunityIcons name='recycle' color={"rgba(20, 98, 185, 0.66)"} size={40}/>
+                                {/* <Text style={{
+                                    fontWeight: "bold",
+                                    color: "rgba(218, 26, 11, 0.8)"
+                                }}>Hapus Transaksi</Text> */}
+
+                                </TouchableOpacity> 
+
+                                <TouchableOpacity onPress={() => {
                                     Alert.alert("Transaksi " + prevName.proName + " akan dihapus!", 'Data akan hilang selamanya!', [
                                             {
                                                 text: 'Batal',
@@ -444,12 +478,12 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     // position: "absolute"
                                 }}>
                                 <MaterialCommunityIcons name='delete-restore' color={"rgba(218, 26, 11, 0.8)"} size={40}/>
-                                <Text style={{
+                                {/* <Text style={{
                                     fontWeight: "bold",
                                     color: "rgba(218, 26, 11, 0.8)"
-                                }}>Hapus Transaksi</Text>
+                                }}>Hapus Transaksi</Text> */}
 
-                                </TouchableOpacity>  */}
+                                </TouchableOpacity> 
 
                                 <TouchableOpacity onPress={() => {
                                         navigation.navigate("Tambah Transaksi", {
@@ -471,10 +505,10 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     // position: "absolute"
                                 }}>
                                 <MaterialCommunityIcons name='book-plus-multiple' color={"rgba(4, 112, 4, 0.77)"} size={40}/>
-                                <Text style={{
+                                {/* <Text style={{
                                     fontWeight: "bold",
                                     color: "rgba(4, 112, 4, 0.77)"
-                                }}>Tambah Transaksi</Text>
+                                }}>Tambah Transaksi</Text> */}
 
                                 </TouchableOpacity> 
                                 

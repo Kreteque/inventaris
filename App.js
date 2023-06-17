@@ -18,7 +18,7 @@ import AddTransaction from './src/components/AddTransaction';
 import AllTransaction from './src/components/AllTransaction';
 import MakeBarcode from './src/components/MakeBarcode';
 import ScanBarcode from './src/components/ScanBarcode';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter } from "firebase/database";
 import { useEffect } from 'react';
 import { db } from './src/database/Config';
@@ -30,6 +30,7 @@ import ProductOut from './src/components/ProductOut';
 import ProductIn from './src/components/ProductIn';
 import HelpPage from './src/components/additional/HelpPage';
 import Returnproduct from './src/components/ReturnProduct';
+import GestureHandlerRootView from 'react-native-gesture-handler';
 
 
 function CustomDrawerContent(props) {
@@ -242,6 +243,7 @@ function createData() {
   return (
 
     <NavigationContainer>
+    
 
       {/* <MyDrawer/> */}
       {isLoggedIn ? <MyStack/> : 
@@ -329,7 +331,7 @@ function createData() {
           keyboardType='numeric'>
       </TextInput>
         </View> }
-
+      
     </NavigationContainer>
     
   )

@@ -1,10 +1,10 @@
-import { Alert, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Alert, StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, TouchableRipple } from 'react-native-paper';
 import AllProducts from './AllProducts';
 import { ref, set, update, onValue, remove, query, limitToFirst } from "firebase/database";
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { db } from '../database/Config';
 import { useEffect } from 'react';
 
@@ -19,7 +19,7 @@ export default function Dashboard({navigation, props}) {
   const [isNull, setIsnull] = useState(true);
 
   // console.log(usrData);
-  console.log(trData);
+  // console.log(trData);
   useEffect(() => {
     getUsrData();
     getTrData();
@@ -39,7 +39,7 @@ export default function Dashboard({navigation, props}) {
   }
 
   const getTrData = () => {
-    const starCountRef = query(ref(db, 'transactions'), limitToFirst(5));
+    const starCountRef = query(ref(db, 'transactions'));
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
       setTrData(data);
@@ -94,7 +94,7 @@ export default function Dashboard({navigation, props}) {
                   flexDirection : "row",
               }}>
               
-              <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.status} </Text></Text>
+              <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.status} </Text></Text>
               {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
               </View>
               
@@ -264,7 +264,7 @@ export default function Dashboard({navigation, props}) {
             // alignSelf: "flex-end",
             // marginTop: windowHeight -170,
             margin: 15,
-            marginLeft: 320
+            marginLeft: Dimensions.get("screen").width - 90,
             
         }}>
             <MaterialCommunityIcons color={"rgba(22, 125, 203, 0.9)"} name='account-wrench' size={30} style={{

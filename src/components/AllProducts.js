@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, View, Button, TouchableOpacity, Modal, Dimensions } from 'react-native'
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import {db} from '../database/Config';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter } from "firebase/database";
@@ -47,11 +47,11 @@ export default function AllProducts({navigation, props}) {
     const dateStamp = new Date();
     const month = dateStamp.getMonth() + 1;
     const updatedTimeStamp = String(dateStamp.getDate() + "/" + month + "/" + dateStamp.getFullYear());
-    const formatter = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
+    // const formatter = new Intl.NumberFormat('id-ID', {
+    //     style: 'currency',
+    //     currency: 'IDR',
       
-      });
+    //   });
 
    
       

@@ -3,7 +3,7 @@
 import { Button, Dialog } from '@rneui/themed';
 // import styles from './../styles/Style'
 import { RNCamera } from 'react-native-camera';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React from 'react'
 import { ref, onValue, query } from "firebase/database";
