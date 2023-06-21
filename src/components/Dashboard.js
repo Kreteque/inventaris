@@ -171,7 +171,7 @@ export default function Dashboard({navigation, props}) {
                   
                 </TouchableRipple>
 
-                <TouchableRipple style={styles.dashButtons} onPress={() => navigation.navigate('Semua Produk')} rippleColor="rgba(238, 238, 238, .128)" >
+                <TouchableRipple style={styles.dashButtons} onPress={() => navigation.navigate('Produk Retur')} rippleColor="rgba(238, 238, 238, .128)" >
                 <View style={{
                     fontWeight: "bold", 
                     color: "white",
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
 
       containerChild : {
          flex: 1,
-         backgroundColor :'rgba(222, 229, 255, 0.7)',
+         backgroundColor :'rgba(243, 248, 248, 0.38)',
         //  height: "30%",
       },
 

@@ -1,4 +1,16 @@
-import { StyleSheet, Text, View, Button, Linking, Dimensions, TouchableOpacity } from 'react-native'
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  Button, 
+  Linking, 
+  Dimensions, 
+  TouchableOpacity, 
+  Alert,
+  BackHandler,
+  ImageBackground,
+ } from 'react-native'
+import { useNetInfo } from '@react-native-community/netinfo';
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -31,6 +43,7 @@ import ProductIn from './src/components/ProductIn';
 import HelpPage from './src/components/additional/HelpPage';
 import Returnproduct from './src/components/ReturnProduct';
 import GestureHandlerRootView from 'react-native-gesture-handler';
+import { BackgroundImage } from '@rneui/base';
 
 
 function CustomDrawerContent(props) {
@@ -181,15 +194,18 @@ export default function App({navigation}) {
   const [usrEmail, setUsrEmail] = useState("");
   const [usrPin, setUsrPin] = useState("");
   const [addUser, setAddUser] = useState ("");
-  const [login, setLogin] = useState("")
-
+  const [login, setLogin] = useState("");
+  const [errText, setErrText] = useState('');
  
   const usrID = String(uuid.v4());
+  const netInfo = useNetInfo();
 
   const getData = () => {
+    
     const starCountRef = query(ref(db, 'userAtr'));
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
+      
       setUserAtributes(data);
       setLogin("")
     });
@@ -203,14 +219,36 @@ export default function App({navigation}) {
     // console.log(login);
     // console.log(atributUser.map((item) => item.usrEmail));
     
+    // console.log(netInfo.isConnected);
 }, [])
  
 const enter = () => {
+  checkConnection();
   atributUser.map((item) => {if (item.usrPin === login) {
+ 
     setIsLoggedIn(true);
     setLogin("")
-  }})
+  } else {
+    
+    setErrText("Pin yang dimasukan salah!\nSilakan coba kembali");
+    setLogin("");
+  }
+
+})
 }
+
+const checkConnection = () => {
+  if (netInfo.isConnected === false) {
+    Alert.alert("Tidak ada koneksi internet", 'silakan hubungkan perangkat ke internet', [
+      {
+          text: 'Tutup',
+          style: 'cancel',
+      },
+      {text: 'Keluar', onPress: () => {BackHandler.exitApp()}},
+      ]);
+  }
+  console.log(netInfo.isConnected?.toString());
+};
 
 function createData() {
     
@@ -250,12 +288,49 @@ function createData() {
         <View style={{
           height: Dimensions.get("screen").height,
           width: Dimensions.get("screen").width,
-          backgroundColor: "rgba(59, 77, 150, 0.5)",
+          backgroundColor: "rgba(39, 245, 230, 0.08)",
           alignItems: "center",
           // mar: Dimensions.get("screen").width - 200,
           flexDirection: "column",
           // justifyContent: "space-evenly"
         }}>
+
+        <ImageBackground 
+        source={{uri: "https://static.vecteezy.com/system/resources/previews/005/647/959/original/isometric-illustration-concept-man-analyzing-goods-in-warehouse-free-vector.jpg"}}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+        }}
+        resizeMode='cover'
+        blurRadius={4}
+        
+        >
+
+        
+
+          {!!errText && 
+          <View style={{
+            // position: "absolute",
+            marginTop: 40
+          }}>
+            <Text style={{
+              color: "red",
+              fontWeight: "500",
+              textAlign: "center"
+            }}>
+              {errText}
+            </Text>
+          </View>}
+
+          <View>
+          <Text style={{
+            position: "absolute",
+            alignSelf: "center",
+            marginTop: 340,
+            color: "grey"
+          }} onPress={() => {Linking.openURL("https://github.com/Kreteque")}}>2023 © Kreteque</Text>
+          </View>
+
           <TextInput  
           value={String(login)}
           onChangeText={(login) => {setLogin(String(login)); }}
@@ -268,12 +343,14 @@ function createData() {
             alignSelf : "center",
             // position: "absolute",
             margin: 50,
-            marginTop: 300,
+            marginTop: 50,
             textAlign: "center",
             borderBottomWidth: 3,
             borderBottomColor: "grey",
             borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10
+            borderBottomRightRadius: 10,
+            fontWeight: "bold",
+          
 
           }}
           maxLength={8}
@@ -298,7 +375,11 @@ function createData() {
 
 
       </TouchableOpacity> */}
+      
+      </ImageBackground>
         </View>}
+
+        
 
         { !!addUser && <View>
           
