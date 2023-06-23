@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import { Alert, StyleSheet, Text, View, TouchableOpacity, Dimensions, Pressable, ActivityIndicator } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, TouchableRipple } from 'react-native-paper';
@@ -7,7 +7,7 @@ import { ref, set, update, onValue, remove, query, limitToFirst } from "firebase
 import { useState } from 'react';
 import { db } from '../database/Config';
 import { useEffect } from 'react';
-
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 const totalProduk = 100.0;
 // const productItems = firebase.firestore().collection('products');
 
@@ -17,6 +17,7 @@ export default function Dashboard({navigation, props}) {
   const [trData, setTrData] = useState([]);
   const [prData, setPrData] = useState([]);
   const [isNull, setIsnull] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // console.log(usrData);
   // console.log(trData);
@@ -29,6 +30,91 @@ export default function Dashboard({navigation, props}) {
     } 
 }, [])
 
+const generatePDF = async () => {
+  setIsLoading(true);
+  try {
+    const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet">
+        <style>
+          body {
+            background: #fff;
+            padding: 0 24px;
+            margin: 0;
+            height: 100vh;
+            color: rgb(15, 13, 13);
+            display: flex;
+            
+            align-items: center;
+            flex-direction: column;
+          } h2, table {
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+        <header>
+          <h2>DAFTAR INVENTARIS KYK SUKSES MAKMUR<br>PERIODE</h2>
+        </header>
+        <table style="width: 100%; margin-top: 10px; font-size: 0.8em;" border="1px">
+        <tr align="center" >
+            <th style="padding:2.5px; width: 5%;" rowspan="2">No</th>
+            <th style="padding:2.5px; width: 20%;" rowspan="2">ID Barang</th>
+            <th style="padding:2.5px; width: 30%;" rowspan="2">Nama Barang</th>
+            <th style="padding:2.5px;" colspan="5">Stok</th>
+            
+        </tr>
+        <tr>
+            <th>Satuan</th>
+            <th>Total</th>
+            <th>Masuk</th>
+            <th>Keluar</th>
+            <th>Retur</th> 
+           
+        </tr>
+    
+        
+        <tr>
+        ${Object.values(prData).map((item) => {var num = 0; num++; return `
+            <td>${num}</td>
+            <td>${item.UID}</td>
+            <td>${item.proName}</td>
+            <td>qttyUnit</td>
+            <td>${item.qtty}</td>
+            <td>${item.addedQtty}</td>
+            <td>${item.subbsQtty}</td>
+            <td>${item.qttyOnhold}</td>
+        </tr>`})}
+    </table>
+    
+      </body>
+    </html>
+    `;
+    const options = {
+      html,
+      fileName: `Daftar_inventaris_periode_1`,
+      directory: 'Laporan_Inventaris',
+    };
+    const file = await RNHTMLtoPDF.convert(options);
+    Alert.alert('Success', `PDF saved to ${file.filePath}`);
+    
+    setIsLoading(false);
+  } catch (error) {
+    Alert.alert('Error', error.message);
+  }
+};
+
+if (isLoading) {
+  return <ActivityIndicator size="small" color="#0000ff" style={{
+    position: "absolute",
+    alignSelf: "center",
+    marginTop: 300,
+  }} />;
+}
 
   const getUsrData = () => {
     const starCountRef = query(ref(db, 'userAtr'));
@@ -283,7 +369,7 @@ export default function Dashboard({navigation, props}) {
                 // borderRadius: 50,
                 alignItems: "center",
                 borderTopStartRadius: 50,
-                borderBottomEndRadius: 50,
+                borderBottomStartRadius: 50,
                 marginTop: 253
                 
                 }}>
@@ -303,9 +389,38 @@ export default function Dashboard({navigation, props}) {
                 
             </TouchableOpacity> */}
 
+            
+            
         </View>
 
-        
+        <View>
+        <TouchableOpacity onPress={() => {generatePDF()}} style={{
+                backgroundColor: "rgba(151, 214, 250, 0.5)",
+                flexDirection: "row",
+                alignSelf: "flex-start",
+                width: 80,
+                height: 80,
+                justifyContent: "center",
+                // borderRadius: 50,
+                alignItems: "center",
+                borderTopEndRadius: 50,
+                borderBottomEndRadius: 50,
+                marginTop: 253
+                
+                }}>
+                <Text style={{
+                  textAlign: "center",
+                  fontStyle: "normal",
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  color: "rgba(56, 165, 162, 0.8)"
+                }}>
+                  Buat Laporan
+                </Text>
+                
+                
+            </TouchableOpacity>
+            </View>
      
 
     </View>

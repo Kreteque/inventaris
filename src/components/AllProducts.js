@@ -107,7 +107,7 @@ const delData = (param) => {
         let searchTransac = prodTran ? Object.values(prodTran) : [];
         searchTransac = searchTransac.filter((item) => {return item.UID === param});
         // console.log();
-        remove(ref(db, 'transactions/' + searchTransac.map((item) => {return item.transacID}))).then(() => {
+        remove(ref(db, 'transactions/' + param)).then(() => {
             remove(ref(db, 'products/' + param))
     })
     
@@ -460,7 +460,7 @@ const checkSortedBy = () => {
             // We pass our function as default function to close the Modal
             onRequestClose={handleCloseBottomSheet} >
             
-                <View style={[styles.bottomSheet, { height: windowHeight * 0.6 }]}>
+                <View style={[styles.bottomSheet, { height: windowHeight * 0.7 }]}>
                     {/* //  First Section of Bottom sheet with Header and close button */}
 
                     <View style={{ flex: 0, width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -501,9 +501,14 @@ const checkSortedBy = () => {
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)  </Text>  
                                 <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
+                                {/* <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text> */}
+                            </View>
+                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                                <SubText text={String(prevName.prodCode)} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (kode produksi)</Text>
                             </View>
                     </View>
                         
@@ -516,7 +521,7 @@ const checkSortedBy = () => {
                                 // backgroundColor: "grey",
                                 flexDirection: "row",
                                 position:"absolute",
-                                marginTop: windowHeight - 470,
+                                marginTop: windowHeight - 380,
                                 paddingRight: 50
                                 }} >
                                 
@@ -629,7 +634,7 @@ const checkSortedBy = () => {
                             onChangeText={(proDesc) => {setProDesc(proDesc)}}
                             ></TextInput>
                             
-                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            {/* <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput 
                             style={{color: "black"}}
@@ -638,9 +643,9 @@ const checkSortedBy = () => {
                             onChangeText={(uniqID) => {setUniqID(uniqID)}}
                             ></TextInput>
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
-                            </View>
+                            </View> */}
 
-                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            {/* <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput 
                             style={{color: "black"}}
@@ -651,7 +656,7 @@ const checkSortedBy = () => {
                             maxLength={9007199254740991}
                             ></TextInput>
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
-                            </View>
+                            </View> */}
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
@@ -691,7 +696,7 @@ const checkSortedBy = () => {
                                                 onPress: () => console.log('Cancel Pressed'),
                                                 style: 'cancel',
                                             },
-                                            {text: 'Hapus', onPress: () => delData(prevName.UID.toLowerCase())},
+                                            {text: 'Hapus', onPress: () => delData(prevName.proName)},
                                             ]);
                                         
                                         // handleCloseBottomSheet();
@@ -714,6 +719,7 @@ const checkSortedBy = () => {
                                         marginTop:90,
                                         marginLeft:15
                                     }} size={40} color={"rgba(6, 53, 186, 0.8)"} onPress={() => {
+                                        
                                         Alert.alert(prevName.proName + " akan diubah!", 'Kamu yaqin?', [
                                             {
                                                 text: 'Batal',

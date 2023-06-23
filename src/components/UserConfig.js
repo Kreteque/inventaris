@@ -20,7 +20,7 @@ export default function UserConfig({navigation, route}) {
   }
 
 
-  console.log(route.params.id)
+  // console.log(route.params.id)
   return (
     <View style={{
         width: Dimensions.get("screen").width,

@@ -1,84 +1,5 @@
-// import { ScrollView, StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native'
-// import React, { useEffect } from 'react'
-// import BarcodeCreatorViewManager, { BarcodeFormat } from 'react-native-barcode-creator';
-// import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter } from "firebase/database";
-// import { useState } from 'react/cjs/react.development';
-// import {db} from '../database/Config';
-// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { Page, Document } from '@react-pdf/renderer';
-// import ReactPDF from '@react-pdf/renderer';
-// import { Button } from 'react-native-paper';
-// import { FlatGrid } from 'react-native-super-grid';
-
-
-// const MyDocument = () => (
-//     <Document>
-//       <Page size="A4" style={styles.page}>
-//         <View style={styles.section}>
-//           <Text>Section #1</Text>
-//         </View>
-//         <View style={styles.section}>
-//           <Text>Section #2</Text>
-//         </View>
-//       </Page>
-//     </Document>
-//   );
-
-
-
-// export default function MakeBarcode() {
-
-//     const [prodItems, setProdItems] = useState([]);
-//     const prodList =  Object.values(prodItems);
-//     const [messageOn, setMessageOn] = useState(false);
-//     const [codeType, setCodeType] = useState();
-
-
-//     const readData = () => {
-//         const starCountRef = query(ref(db, 'products/' ));
-//         onValue(starCountRef, (snapshot) => {
-//           const data = snapshot.val();
-//           setProdItems(data);
-//         //   console.log(data)
-//         })
-//     }
-
-//     useEffect(() => {
-//         readData();
-//         console.log(prodList)
-        
-//     }, []);
-
-
-//   return (
-    
-//     <View>
-//     <FlatGrid
-//       itemDimension={130}
-//       data={prodList}
-//       style={styles.gridView}
-//       // staticDimension={300}
-//       // fixed
-//       spacing={10}
-//       renderItem={({ item }) => (
-//         <View style={styles.itemContainer}>
-//           <Text style={styles.itemName}>{item}</Text>
-//           {/* <Text style={styles.itemCode}>{item.code}</Text> */}
-//         </View>
-//       )}
-//     />
-//     </View>
-
-//   );
-// }
-
-// const styles = StyleSheet.create({});
-
-
-
-
 import {React, useEffect, useState} from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity,Pressable } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter } from "firebase/database";
 // import React, { useEffect } from 'react'
@@ -87,7 +8,8 @@ import {db} from '../database/Config';
 import BarcodeCreatorViewManager, { BarcodeFormat } from 'react-native-barcode-creator';
 // import ReactPDF from '@react-pdf/renderer';
 
-export default function Example() {
+
+function Grid () {
   const [items, setItems] = useState([]);
 
     const readData = () => {
@@ -104,8 +26,6 @@ export default function Example() {
         // console.log(Object.values(items).map((item) => {return item}))
         
     }, []);
-
-
   return (
     <FlatGrid
       itemDimension={130}
@@ -136,6 +56,13 @@ export default function Example() {
         </View>
       )}
     />
+  );
+}
+
+export default function MakeBarcode() {
+
+  return (
+    <Grid/>
   );
 }
 

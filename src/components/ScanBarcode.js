@@ -88,7 +88,7 @@ export default function ScanBarcode({navigation}) {
             </Text>
             <Dialog.Actions>
                 <Dialog.Button title="Lakukan transaksi?" onPress={() => {
-                    navigation.navigate("Tambah Transaksi", {id : barType, txt : dialText});
+                    navigation.navigate("Tambah Transaksi", {id : barValue, txt : dialText});
                     setShowDialog(false);
                 }}/>
             </Dialog.Actions>

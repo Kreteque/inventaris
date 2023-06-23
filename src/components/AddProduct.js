@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import { useState, useEffect } from 'react';
 import { ref, set, update, onValue, remove } from "firebase/database";
 import { db } from '../database/Config';
 import uuid from 'react-native-uuid';
@@ -19,8 +19,11 @@ export default function AddProduct() {
   const [qtty, setQtty] = useState("");
   const [proDesc, setProDesc] = useState("");
   const [admin, setAdmin] = useState("");
+  const [expired, setExpired] = useState("");
   // const [buyRate, setBuyRate] = useState("");
   const [textError, setTextError] = useState();
+  const [prodCode, setProdCode] = useState("");
+  const [key, setKey] = useState(0);
   const dateStamp = new Date();
   const month = dateStamp.getMonth() + 1;
   
@@ -28,7 +31,7 @@ export default function AddProduct() {
   const [open, setOpen] = useState(false)
   const windowHeight = Dimensions.get('window').height;
   
-  const timeStamp = "0" + String(dateStamp.getDate() + "/" + "0" + month + "/" + dateStamp.getFullYear());
+  const timeStamp = String(dateStamp.getDate() + "/" + month + "/" + dateStamp.getFullYear());
   const searchAndDestroy = String(date).split(' ');
   const monthToNumber = () => {
 
@@ -79,10 +82,15 @@ export default function AddProduct() {
     if(reFormatedExp === timeStamp){
       return reFormatedExp = "Non-Expired";
     } else{
-      return reFormatedExp;
+      return setExpired(reFormatedExp);
     }
   }
   
+  useEffect(() => {
+    
+    setUniqID("kyk-" + String(dateStamp.getMilliseconds()) + String(dateStamp.getDate()) + "-" + String(dateStamp.getFullYear()) + "-sm" );
+    
+}, []);
 
 
   function createData() {
@@ -97,14 +105,20 @@ export default function AddProduct() {
                 proDesc: proDesc.charAt(0).toUpperCase() + proDesc.slice(1),
                 // buyRate: parseInt(buyRate),
                 timeMark: timeStamp,
-                Exp: monthToNumber(),
-                admin: admin
+                // Exp: date,
+                admin: admin,
+                addedQtty : 0,
+                subbsQtty : 0,
+                qttyOnhold: 0,
+                prodCode : prodCode,
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
                 setProName("");
                 setProDesc("");
                 setQtty("");
+                setProdCode("");
+                setExpired("");
                 // setBuyRate("");
 
                 // alert('data updated!');    
@@ -176,7 +190,7 @@ export default function AddProduct() {
 <ScrollView style={{width: "100%", marginLeft: "10%" }}>
       
 
-      <View style={styles.uniqueIdBox}>
+      {/* <View style={styles.uniqueIdBox}>
       <TextInput  
           value={uniqID}
           onChangeText={(uniqID) => {setUniqID(uniqID)}}
@@ -189,8 +203,16 @@ export default function AddProduct() {
         <Button type="clear" title='random id' onPress={(uniqID) => {setUniqID(String(uuid.v4().slice(0, 13)))}} > 
           <MaterialCommunityIcons name="dice-3" color="rgba(78, 116, 289, 1)" size={50} /> 
         </Button>
-      </View>
-      
+      </View> */}
+      <TextInput 
+          value={prodCode}
+          onChangeText={(prodCode) => {setProdCode(prodCode)}}
+          placeholder={"Kode Produksi" }
+          mode='outlined' 
+          style={styles.textBoxes}
+          maxLength={36}
+          onFocus={() => {setKey(key + 1);}}>
+      </TextInput>
       
       <TextInput 
           value={proName}
@@ -239,7 +261,7 @@ export default function AddProduct() {
           maxLength={9007199254740991}>
       </TextInput> */}
 
-      <TouchableOpacity style={{
+      {/* <TouchableOpacity style={{
         // backgroundColor: "green",
         height: 50,
         width: 100,
@@ -257,15 +279,16 @@ export default function AddProduct() {
               open={open}
               date={date}
               onConfirm={(date) => {
-                setOpen(false)
-                setDate(date)
+                setOpen(false);
+                setDate(date);
+                // setExpired(date)
               }}
               onCancel={() => {
                 setOpen(false)
               }}
               mode='date'
               
-            />
+            /> */}
       
       
 
@@ -286,9 +309,9 @@ export default function AddProduct() {
         
         
       }} onPress={() => {
-        if (uniqID.trim() === ""){
-          setUniqID(String(uuid.v4()).slice(0, 13));
-        } else if (proName.trim() === ""){
+        // if (prodCode.trim() === ""){
+        //   setTextError('Kode Produk Diperlukan!');
+         if (proName.trim() === ""){
             setTextError('Nama Produk Diperlukan!');
           }  else if (admin.trim() === ""){
             setTextError('Admin pencatat diperlukan!');

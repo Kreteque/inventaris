@@ -60,7 +60,6 @@ const transacID = () => {
 const trUID = transacID();
 
 
-
 // const createData = () => {
     
 //     // const newKey = push(child(ref(database), 'users')).key;
@@ -261,6 +260,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
       {isSearching ? <ScrollView style={styles.containerChildTwo}>
       { prodList ? prodList.map((item) => {
             const firstLetter = item.proName;
+            
             
             
             return (

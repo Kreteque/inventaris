@@ -55,6 +55,8 @@ const readData = () => {
     
 }
 
+
+
 const getTrData = () => {
     const starCountRef = query(ref(db, 'transactions'));
     onValue(starCountRef, (snapshot) => {
@@ -67,7 +69,7 @@ const getTrData = () => {
   let totalOUT = trData ? Object.values(trData) : [];
   totalOUT = totalOUT.filter((item) => {return item.status === "Keluar"});
 
-  console.log(totalOUT);
+//   console.log(totalOUT);
 // const readTrData = () => {
 //     const prodCount = get(ref(db, 'transactions'));
 //         onValue(prodCount, (snapshot) => {
@@ -97,7 +99,7 @@ const createData = () => {
             proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
             // buyRate: parseInt(prevName.buyRate) * parseInt(transacIn),
             timeMark: prevName.timeMark,
-            Exp: prevName.Exp,
+            // Exp: prevName.Exp,
             
             trQtty: parseInt(transacIn),
             addedQtty : parseInt(transacIn),
@@ -114,12 +116,13 @@ const createData = () => {
             setTranRet('');
     
             update(ref(db, 'products/' + prevName.UID), {
-                qtty : parseInt(prevName.qtty + parseInt(transacIn))
+                qtty : parseInt(prevName.qtty + parseInt(transacIn)),
+                addedQtty: parseInt(prevName.addedQtty + parseInt(transacIn))
             });
           })
       } else {
         alert("Tidak dapat menambahkan barang kurang dari 1!");
-        setTranRet('');
+        setTransacIn('');
       }
     
 
@@ -130,7 +133,7 @@ const createData = () => {
 const createDataOut = () => {
     
         
-       if (parseInt(transacOut) > 0 && parseInt(transacOut) < prevName.qtty && admin !== "" ) {
+       if (parseInt(transacOut) > 0 | parseInt(transacOut) == prevName.qtty && admin !== "" ) {
         set(ref(db, 'transactions/' + trUID ), {    
         
             transacID: trUID,   
@@ -140,7 +143,7 @@ const createDataOut = () => {
             proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
             // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
             timeMark: prevName.timeMark,
-            Exp: prevName.Exp,
+            // Exp: prevName.Exp,
             trQtty: parseInt(transacOut),
             subbsQtty: parseInt(transacOut),
             transactionTimeMark : timeStamp,
@@ -154,7 +157,8 @@ const createDataOut = () => {
             setTransacOut("");
             
             update(ref(db, 'products/' + prevName.UID), {
-                qtty : parseInt(prevName.qtty - parseInt(transacOut))
+                qtty : parseInt(prevName.qtty - parseInt(transacOut)),
+                subbsQtty: parseInt(prevName.subbsQtty + parseInt(transacOut))
             });
           })
        } else {
@@ -171,24 +175,24 @@ const createDataOut = () => {
 
 // const searchTransacOut = Object.values(prodTran);
 // const takeTheSubbs = searchTransacOut.filter((item) => {return item.subbsQtty !== undefined});
-const extractedArr = totalOUT.map((item) => {return item.subbsQtty});
+// const extractedArr = totalOUT.map((item) => {return item.subbsQtty});
 
-const prodOutVal = extractedArr.reduce(
-    (accumulator, currentValue) => accumulator + currentValue,
-    0
-  );
+// const prodOutVal = extractedArr.reduce(
+//     (accumulator, currentValue) => accumulator + currentValue,
+//     0
+//   );
 
-  console.log(prodOutVal);
+// //   console.log(prodOutVal);
 const createDataRet = () => {
 
-    const extractedArr = totalOUT.map((item) => {return item.subbsQtty});
+    // const extractedArr = totalOUT.map((item) => {return item.subbsQtty});
 
-    const prodOutVal = extractedArr.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0
-      );
+    // const prodOutVal = extractedArr.reduce(
+    //     (accumulator, currentValue) => accumulator + currentValue,
+    //     0
+    //   );
     
-      console.log(prodOutVal);
+    //   console.log(prodOutVal);
 
             // console.log(prodOutVal)
 
@@ -208,12 +212,15 @@ const createDataRet = () => {
 //         // searchTransacOut = searchTransacOut.filter((item) => {return item.status === "Keluar"});
 //         // let totalQttyOut =searchTransacOut.map((item) => {return parseInt(item.subbsQtty)});
 //         // console.log(searchTransacOut.map((item) => {return item.subbsQtty}));
+            var totalOut = prodList.map((item) => {return item.subbsQtty});
+            var totalRet = prodList.map((item) => {return item.qttyOnhold});
+            var totalIn = prodList.map((item) => {return item.addedQtty});
+            // console.log(parseInt(totalOut));
         
-        if (parseInt(transacRet) < prodOutVal ){
             // console.log(searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}))
-            if (parseInt(transacRet) < 0) {
+            if (parseInt(transacRet) < 0 | parseInt(transacRet) > parseInt(totalOut) | parseInt(totalRet) >= parseInt(totalIn)) {
                 setTransacRet(NaN);
-                alert("Jumlah transaksi retur harus lebih dari 0 dan jumlah transaksi keluar!");
+                alert("Jumlah transaksi retur tidak valid!");
             } else{
                 set(ref(db, 'transactions/' + trUID ), {    
         
@@ -224,7 +231,7 @@ const createDataRet = () => {
                     proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
                     // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
                     timeMark: prevName.timeMark,
-                    Exp: prevName.Exp,
+                    // Exp: prevName.Exp,
                     
                     
                     trQtty: parseInt(transacRet),
@@ -238,7 +245,9 @@ const createDataRet = () => {
                     alert("transaksi ditambah");
                     // setIsEditMode(true);
                     setTransacRet("");
-                    
+                    update(ref(db, 'products/' + prevName.UID), {
+                        qttyOnhold: parseInt(prevName.qttyOnhold + parseInt(transacRet))
+                    });
                     // update(ref(db, 'products/' + prevName.UID), {
                     //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
                     // });
@@ -246,11 +255,7 @@ const createDataRet = () => {
             }
             
             
-        } 
-        else {
-            alert("Jumlah transaksi retur harus lebih dari 0 dan jumlah transaksi keluar!");
-            // console.log();
-        } 
+        
         
     
 }

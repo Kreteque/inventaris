@@ -44,6 +44,7 @@ import HelpPage from './src/components/additional/HelpPage';
 import Returnproduct from './src/components/ReturnProduct';
 import GestureHandlerRootView from 'react-native-gesture-handler';
 import { BackgroundImage } from '@rneui/base';
+import MakeReport from './src/components/MakeReport';
 
 
 function CustomDrawerContent(props) {
@@ -123,6 +124,13 @@ function MyDrawer() {
         options={{drawerIcon : () => (
           <MaterialCommunityIcons name="arrow-u-right-bottom-bold" color={'rgba(200, 165, 0, 0.83)'}  size={25} />
         )}} />
+
+      <Drawer.Screen
+        name="Buat Laporan"
+        component={MakeReport}
+        options={{drawerIcon : () => (
+          <MaterialCommunityIcons name="arrow-u-right-bottom-bold" color={'rgba(200, 165, 0, 0.83)'}  size={25} />
+        )}} />
         
 
         {/* <Drawer.Screen name='Github'>
@@ -179,6 +187,7 @@ function MyStack() {
       <Stack.Screen name='Scan Barcode' component={ScanBarcode}/>
       <Stack.Screen name='Pengaturan Pengguna' component={UserConfig}/>
       <Stack.Screen name='Halaman Bantuan' component={HelpPage}/>
+      <Stack.Screen name='Buat Laporan' component={MakeReport}/>
       
     </Stack.Navigator>
   );
