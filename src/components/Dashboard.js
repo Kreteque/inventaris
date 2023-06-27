@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View, TouchableOpacity, Dimensions, Pressable, ActivityIndicator } from 'react-native'
+import { Alert, StyleSheet, Text, View, TouchableOpacity, Dimensions, Pressable, ActivityIndicator, PermissionsAndroid } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, TouchableRipple } from 'react-native-paper';
@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { db } from '../database/Config';
 import { useEffect } from 'react';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNFS from 'react-native-fs';
+import  ManageExternalStorage  from 'react-native-manage-external-storage';
 const totalProduk = 100.0;
 // const productItems = firebase.firestore().collection('products');
 
@@ -18,7 +20,8 @@ export default function Dashboard({navigation, props}) {
   const [prData, setPrData] = useState([]);
   const [isNull, setIsnull] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [result, setResult] = useState(false);
+  const dateStamp = new Date();
   // console.log(usrData);
   // console.log(trData);
   useEffect(() => {
@@ -28,11 +31,43 @@ export default function Dashboard({navigation, props}) {
     if (trData !== null) {
       setIsnull(false);
     } 
-}, [])
+
+    async function AskPermission() {
+      await ManageExternalStorage.checkAndGrantPermission(
+             err => { 
+               setResult(false)
+            },
+            res => {
+             setResult(true)
+            },
+          )
+     }
+       AskPermission()
+}, []);
+
+const requestExternalPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      
+    );
+    if (granted === true || granted === PermissionsAndroid.RESULTS.GRANTED) {
+     generatePDF();
+    } else {
+      Alert.alert('Izin Ditolak!', `PDF gagal dibuat.`);
+      console.log(granted);
+    }
+  } catch (err) {
+    Alert.alert(err);
+  }
+};
 
 const generatePDF = async () => {
   setIsLoading(true);
   try {
+    
+    
+
     const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -58,22 +93,24 @@ const generatePDF = async () => {
       </head>
       <body>
         <header>
-          <h2>DAFTAR INVENTARIS KYK SUKSES MAKMUR<br>PERIODE</h2>
+          <h2>DAFTAR INVENTARIS KYK SUKSES MAKMUR<br>PERIODE ${String(dateStamp.getDate()) + "/" + String(dateStamp.getMonth() + 1) + "/" + String(dateStamp.getFullYear())}</h2>
         </header>
         <table style="width: 100%; margin-top: 10px; font-size: 0.8em;" border="1px">
         <tr align="center" >
             <th style="padding:2.5px; width: 5%;" rowspan="2">No</th>
             <th style="padding:2.5px; width: 20%;" rowspan="2">ID Barang</th>
             <th style="padding:2.5px; width: 30%;" rowspan="2">Nama Barang</th>
-            <th style="padding:2.5px;" colspan="5">Stok</th>
+            <th style="padding:2.5px; width: 30%;" rowspan="2">Satuan</th>
+            <th style="padding:2.5px;" colspan="6">Stok</th>
             
         </tr>
         <tr>
-            <th>Satuan</th>
-            <th>Total</th>
+            
+            <th>Awal</th>
             <th>Masuk</th>
             <th>Keluar</th>
-            <th>Retur</th> 
+            <th>Retur</th>
+            <th>Akhir</th> 
            
         </tr>
     
@@ -88,6 +125,7 @@ const generatePDF = async () => {
             <td>${item.addedQtty}</td>
             <td>${item.subbsQtty}</td>
             <td>${item.qttyOnhold}</td>
+            <td>endTR</td>
         </tr>`})}
     </table>
     
@@ -96,15 +134,30 @@ const generatePDF = async () => {
     `;
     const options = {
       html,
-      fileName: `Daftar_inventaris_periode_1`,
-      directory: 'Laporan_Inventaris',
+      fileName: `Daftar_inventaris_periode_${String(dateStamp.getDate()) + "-" + String(dateStamp.getMonth() + 1) + "-" + String(dateStamp.getFullYear())}`,
+      directory: 'Inventaris',
     };
-    const file = await RNHTMLtoPDF.convert(options);
-    Alert.alert('Success', `PDF saved to ${file.filePath}`);
+
+    
+    
+      const file = await RNHTMLtoPDF.convert(options);
+      const path = RNFS.DownloadDirectoryPath;
+      Alert.alert('Laporan dibuat!', `PDF disimpan di: ${file.filePath}`);
+   
+      // RNFS.writeFile(path, file)
+      // .then(() => {
+      //   console.log('FILE WRITTEN!' + path);
+      //   Alert.alert('FILE WRITTEN!' + path);
+      // })
+      // .catch((err) => {
+      //   console.log(err.message);
+      // });
+    
     
     setIsLoading(false);
   } catch (error) {
     Alert.alert('Error', error.message);
+    setIsLoading(false);
   }
 };
 

@@ -125,12 +125,12 @@ function MyDrawer() {
           <MaterialCommunityIcons name="arrow-u-right-bottom-bold" color={'rgba(200, 165, 0, 0.83)'}  size={25} />
         )}} />
 
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Buat Laporan"
         component={MakeReport}
         options={{drawerIcon : () => (
           <MaterialCommunityIcons name="arrow-u-right-bottom-bold" color={'rgba(200, 165, 0, 0.83)'}  size={25} />
-        )}} />
+        )}} /> */}
         
 
         {/* <Drawer.Screen name='Github'>
