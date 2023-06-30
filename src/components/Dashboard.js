@@ -60,6 +60,7 @@ const requestExternalPermission = async () => {
   } catch (err) {
     Alert.alert(err);
   }
+  
 };
 
 const generatePDF = async () => {
@@ -86,8 +87,13 @@ const generatePDF = async () => {
             
             align-items: center;
             flex-direction: column;
-          } h2, table {
+          } h2 {
             text-align: center;
+          } table {
+            counter-reset: rowNumber;
+            text-align: center;
+          } table tr::before {
+            counter-increment: rowNumber;
           }
         </style>
       </head>
@@ -116,16 +122,16 @@ const generatePDF = async () => {
     
         
         <tr>
-        ${Object.values(prData).map((item) => {var num = 0; num++; return `
-            <td>${num}</td>
+        ${Object.values(prData).map((item) => {  return `
+            <td></td>
             <td>${item.UID}</td>
             <td>${item.proName}</td>
-            <td>qttyUnit</td>
-            <td>${item.qtty}</td>
+            <td>${item.unit}</td>
+            <td>firstQtty</td>
             <td>${item.addedQtty}</td>
             <td>${item.subbsQtty}</td>
             <td>${item.qttyOnhold}</td>
-            <td>endTR</td>
+            <td>${item.qtty}</td>
         </tr>`})}
     </table>
     
@@ -142,8 +148,8 @@ const generatePDF = async () => {
     
       const file = await RNHTMLtoPDF.convert(options);
       const path = RNFS.DownloadDirectoryPath;
-      Alert.alert('Laporan dibuat!', `PDF disimpan di: ${file.filePath}`);
-   
+      Alert.alert('Laporan dibuat!', `PDF disimpan di: penyimpanan internal/Documents/Inventaris/${options.fileName}`);
+      console.log(file);
       // RNFS.writeFile(path, file)
       // .then(() => {
       //   console.log('FILE WRITTEN!' + path);

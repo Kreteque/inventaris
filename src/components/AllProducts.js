@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View, Button, TouchableOpacity, Modal, Dimensions } from 'react-native'
+import { Alert, StyleSheet, Text, View, Button, TouchableOpacity, Modal, Dimensions, ImageBackground } from 'react-native'
 import { useState } from 'react';
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import {db} from '../database/Config';
@@ -106,10 +106,23 @@ const delData = (param) => {
     
         let searchTransac = prodTran ? Object.values(prodTran) : [];
         searchTransac = searchTransac.filter((item) => {return item.UID === param});
-        // console.log();
-        remove(ref(db, 'transactions/' + param)).then(() => {
-            remove(ref(db, 'products/' + param))
-    })
+        let trIDs = searchTransac.map((item) => {return item.transacID});
+        // console.log(trIDs);
+        // console.log(trIDs.pop());
+        // console.log(trIDs.pop());
+        // console.log(trIDs.pop());
+        // console.log(trIDs.length);
+
+        while (trIDs.length !== 0) {
+            let shiftedArr = trIDs.pop();
+            remove(ref(db, 'transactions/' + shiftedArr));
+            console.log(shiftedArr);
+        }
+
+        if (trIDs.length === 0) {
+            remove(ref(db, 'products/' + param));
+        }
+   
     
   }
 
@@ -258,16 +271,24 @@ const checkSortedBy = () => {
 
         <View style={styles.containerChild}>
 
-            <View style={styles.infoCard}>
+        <ImageBackground 
+        source={{uri: "https://img.freepik.com/premium-vector/large-set-business-themed-items-business-partnership-business-concept-vector-illustration_666729-190.jpg?w=2000"}}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+        }}
+        resizeMode='cover'
+        blurRadius={1}
+        
+        ></ImageBackground>
+
+            {/* <View style={styles.infoCard}>
 
             <View>
             <Text style={styles.infoCardText}>
                     Total Kuantitas 
                 </Text>
 
-                {/* <Text style={styles.infoCardText}>
-                    Total Harga beli 
-                </Text> */}
 
                 <Text style={styles.infoCardText}>
                     Total Jumlah Barang 
@@ -276,19 +297,17 @@ const checkSortedBy = () => {
 
             <View>
                     <Text style={styles.totalText}> : {totalQtty.reduce((a, b) => {
-                        {/* console.log(sortedByQtty); */}
+                        
                         return a + b;
                     }, 0)}
                     </Text>
 
-                    {/* <Text style={styles.totalText}> : {formatter.format(totBRnum) }
-                    </Text> */}
-
+                   
                     <Text style={styles.totalText}> : {Object.keys(prodItems).length}
                     </Text>
             </View>
 
-            </View>
+            </View> */}
 
         </View>
 
@@ -382,15 +401,18 @@ const checkSortedBy = () => {
                     
                     </Text>
 
-                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
-                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty}</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>PID:</Text> ({item.UID.toUpperCase()})</Text>
+                    <View>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty} {item.unit}</Text>
+                    <View style={{ marginTop: 2, opacity: .60, height: 1, borderWidth: 1, borderColor: 'rgba(78, 116, 289, 1)', width: 270 }} />
+                    </View>
                     
                    
                     </View>
-
                     
                     
                 </TouchableOpacity>
+                
             )
         }) : <View>
 
@@ -478,13 +500,13 @@ const checkSortedBy = () => {
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.UID} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (PID)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.qtty)} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (tersimpan)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -506,10 +528,10 @@ const checkSortedBy = () => {
                                 {/* <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text> */}
                             </View>
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
-                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+                            {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.prodCode)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (kode produksi)</Text>
-                            </View>
+                            </View> */}
                     </View>
                         
                             <View style={{
@@ -985,9 +1007,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: "white",
         padding : 20,
-        borderBottomColor: "rgba(44, 98, 169, 0.8)",
-        borderBottomWidth: 1,
+        // borderBottomColor: "rgba(44, 98, 169, 0.8)",
+        // borderBottomWidth: 1,
         height: 100,
+        
      },
      buttonStyle : {
         borderRadius: 100,

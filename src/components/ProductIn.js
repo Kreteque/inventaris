@@ -135,7 +135,6 @@ const createDataOut = () => {
 //    return {id, name, city};
 // });
 
-
 const sortedTrList = prodItems ? Object.values(prodItems): [];
 const sortedByAz = sortedTrList.sort((a,b) => {
     return b.qtty - a.qtty;

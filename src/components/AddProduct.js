@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ref, set, update, onValue, remove } from "firebase/database";
 import { db } from '../database/Config';
 import uuid from 'react-native-uuid';
@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Button, Icon } from '@rneui/themed';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DatePicker from 'react-native-date-picker';
-
+import {Picker} from '@react-native-picker/picker';
 
 
 
@@ -24,8 +24,10 @@ export default function AddProduct() {
   const [textError, setTextError] = useState();
   const [prodCode, setProdCode] = useState("");
   const [key, setKey] = useState(0);
+  const [prodList, setProdlist] = useState({});
   const dateStamp = new Date();
   const month = dateStamp.getMonth() + 1;
+  const [selectedUnit, setSelectedUnit] = useState();
   
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false)
@@ -88,15 +90,29 @@ export default function AddProduct() {
   
   useEffect(() => {
     
-    setUniqID("kyk-" + String(dateStamp.getMilliseconds()) + String(dateStamp.getDate()) + "-" + String(dateStamp.getFullYear()) + "-sm" );
+    readData();
+    console.log(Object.values(prodList).length);
+  
+    setUniqID("kyk_" + String(dateStamp.getMonth() + 1) + "_" + String(dateStamp.getFullYear()) + "_" +  String(dateStamp.getMilliseconds()));
     
 }, []);
+
+
+const pickerRef = useRef();
+
+function openPicker() {
+  pickerRef.current.focus();
+}
+
+function closePicker() {
+  pickerRef.current.blur();
+}
 
 
   function createData() {
     
             // const newKey = push(child(ref(database), 'users')).key;
-
+            
            
               set(ref(db, 'products/' + uniqID ), {          
                 UID: uniqID,
@@ -110,7 +126,9 @@ export default function AddProduct() {
                 addedQtty : 0,
                 subbsQtty : 0,
                 qttyOnhold: 0,
-                prodCode : prodCode,
+                // prodCode : prodCode,
+                unit : selectedUnit,
+                fQtty: 0
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
@@ -120,7 +138,7 @@ export default function AddProduct() {
                 setProdCode("");
                 setExpired("");
                 // setBuyRate("");
-
+               
                 // alert('data updated!');    
             })  
                 .catch((error) => {
@@ -158,10 +176,10 @@ export default function AddProduct() {
 
   function readData() {
 
-    const starCountRef = ref(db, 'users/' + uniqID);
+    const starCountRef = ref(db, 'products/');
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
-      setProName(data.proName);
+      setProdlist(data);
       // setEmail(data.email);   
 
     });
@@ -187,7 +205,7 @@ export default function AddProduct() {
           <Text style={{ color: "green" }}>Data berhasil ditambahkan!</Text>
         )}
 
-<ScrollView style={{width: "100%", marginLeft: "10%" }}>
+<ScrollView style={{width: "100%", marginLeft: "10%",}}>
       
 
       {/* <View style={styles.uniqueIdBox}>
@@ -204,7 +222,7 @@ export default function AddProduct() {
           <MaterialCommunityIcons name="dice-3" color="rgba(78, 116, 289, 1)" size={50} /> 
         </Button>
       </View> */}
-      <TextInput 
+      {/* <TextInput 
           value={prodCode}
           onChangeText={(prodCode) => {setProdCode(prodCode)}}
           placeholder={"Kode Produksi" }
@@ -212,7 +230,7 @@ export default function AddProduct() {
           style={styles.textBoxes}
           maxLength={36}
           onFocus={() => {setKey(key + 1);}}>
-      </TextInput>
+      </TextInput> */}
       
       <TextInput 
           value={proName}
@@ -222,6 +240,10 @@ export default function AddProduct() {
           style={styles.textBoxes}
           maxLength={36}>
       </TextInput>
+
+      
+                            
+                            
 
       <TextInput 
           value={proDesc}
@@ -290,7 +312,20 @@ export default function AddProduct() {
               
             /> */}
       
-      
+            <Text style={{color: "rgba(52, 162, 40, 0.8)", fontWeight: "600"}}>Satuan Unit :</Text>
+                  <Picker
+                      ref={pickerRef}
+                      selectedValue={selectedUnit}
+                      onValueChange={(itemValue, itemIndex) =>
+                      setSelectedUnit(itemValue)}
+                      style={{
+                      width: 100,
+                      height: 60}}>
+                                
+                  <Picker.Item label="Pilih" value="" />
+                  <Picker.Item label="Buah" value="buah" />
+                  <Picker.Item label="Gram" value="gram" />
+                  </Picker>
 
 </ScrollView>
 
@@ -338,6 +373,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // justifyContent: 'space-around',
     margin: 10,
+    height: 400
     
   },
   textBoxes: {

@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import { ref, set, update, onValue, remove, push, child, database, getDatabase, DataSnapshot, query, orderByChild, orderByValue, orderByKey, startAt, limitToFirst, startAfter, equalTo, get } from "firebase/database";
 import {db} from '../database/Config';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { TextInput } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import uuid from 'react-native-uuid'; 
@@ -107,7 +107,9 @@ const createData = () => {
             status: "Masuk",
             icon: "arrow-bottom-left-thick",
             color: "rgba(4, 135, 46, 0.68)",
-            admin: admin
+            admin: admin,
+            unit: prevName.unit,
+            
           }).then(() => {
             alert("transaksi ditambah");
             // setIsEditMode(true);
@@ -117,7 +119,8 @@ const createData = () => {
     
             update(ref(db, 'products/' + prevName.UID), {
                 qtty : parseInt(prevName.qtty + parseInt(transacIn)),
-                addedQtty: parseInt(prevName.addedQtty + parseInt(transacIn))
+                addedQtty: parseInt(prevName.addedQtty + parseInt(transacIn)),
+                fQtty: parseInt(transacIn)
             });
           })
       } else {
@@ -133,7 +136,7 @@ const createData = () => {
 const createDataOut = () => {
     
         
-       if (parseInt(transacOut) > 0 | parseInt(transacOut) == prevName.qtty && admin !== "" ) {
+       if (parseInt(transacOut) > 0 && parseInt(transacOut) <= prevName.addedQtty || parseInt(transacOut) == prevName.qtty && admin !== "" ) {
         set(ref(db, 'transactions/' + trUID ), {    
         
             transacID: trUID,   
@@ -150,7 +153,8 @@ const createDataOut = () => {
             status : "Keluar",
             icon: "arrow-top-right-thick",
             color: "rgba(135, 4, 4, 0.68)",
-            admin: admin
+            admin: admin,
+            unit: prevName.unit
           }).then(() => {
             alert("transaksi ditambah");
             // setIsEditMode(true);
@@ -218,7 +222,7 @@ const createDataRet = () => {
             // console.log(parseInt(totalOut));
         
             // console.log(searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}))
-            if (parseInt(transacRet) < 0 | parseInt(transacRet) > parseInt(totalOut) | parseInt(totalRet) >= parseInt(totalIn)) {
+            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut) || parseInt(totalRet) >= parseInt(totalIn)) {
                 setTransacRet(NaN);
                 alert("Jumlah transaksi retur tidak valid!");
             } else{
@@ -240,7 +244,8 @@ const createDataRet = () => {
                     status : "Retur",
                     icon: "arrow-u-right-bottom-bold",
                     color: "rgba(243, 134, 0, 0.7)",
-                    admin: admin
+                    admin: admin,
+                    unit: prevName.unit
                   }).then(() => {
                     alert("transaksi ditambah");
                     // setIsEditMode(true);
@@ -381,8 +386,8 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     
                     </Text>
 
-                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
-                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty}</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>PID:</Text> ({item.UID.toUpperCase()})</Text>
+                    <Text style={{color : "grey"}}><Text style={{color : "black"}}>Tersimpan: </Text>{item.qtty} {item.unit}</Text>
                     
                    
                     </View>
@@ -440,13 +445,13 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.UID} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (PID)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.qtty)} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tersimpan)</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (tersimpan)</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
@@ -463,9 +468,9 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)   ||   </Text>  
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk) </Text>  
                                 <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text  style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text>
+                                {/* <Text  style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text> */}
                             </View>
                     </View>
                         
@@ -576,7 +581,11 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 <Text color={'#86827e'} size={14} family={'Poppins-med'}> (UID)</Text>
                             </View>
 
+                            
+
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                           
+                                
                                 <TextInput 
                                     value={transacIn}
                                     // placeholder={String(prevName.qtty)}
@@ -585,7 +594,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>
-                                <Text style={{color : "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tambahkan jumlah stok)</Text>
+                                <Text style={{color : "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (tambahkan jumlah stok)</Text>
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
@@ -694,7 +703,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>}
-                                { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok keluar)</Text>}
+                                { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok keluar)</Text>}
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
@@ -808,7 +817,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>
-                                <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (jumlah stok diretur)</Text>
+                                <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok diretur)</Text>
                             </View>
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>

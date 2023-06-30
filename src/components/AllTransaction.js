@@ -292,7 +292,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     
                     </Text>
 
-                    <Text><Text style={{color : "black"}}>UID:</Text> ({item.UID.toUpperCase()})</Text>
+                    <Text><Text style={{color : "black"}}>PID:</Text> ({item.UID.toUpperCase()})</Text>
                     <Text><Text style={{color : "black"}}> </Text>{item.qtty}</Text>
                     
                    
@@ -355,7 +355,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                         flexDirection : "row",
                     }}>
                     
-                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.status} </Text></Text>
+                    <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.unit} {item.status} </Text></Text>
                     {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
                     </View>
                     
@@ -410,7 +410,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={addOrSubb} color={'#292929'} family={'PoppinsSBold'} size={20} />
-                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.trQtty}  {prevName.status}</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> <MaterialCommunityIcons color={prevName.color} size={20} name={prevName.icon}/> {prevName.trQtty} {prevName.unit}  {prevName.status}</Text>
                             </View>
 
                             <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
