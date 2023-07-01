@@ -70,7 +70,7 @@ function MyDrawer() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
       drawerStyle: {
-      backgroundColor: '#c6cbef',
+      backgroundColor: 'white',
       width: 240,
       
     }

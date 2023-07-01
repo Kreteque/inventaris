@@ -62,7 +62,7 @@ const trUID = transacID();
 
 const updateProdQtty = (uid, quantity, onHold, tr ) => {
     update(ref(db, 'products/' + uid), {
-        qtty: quantity += onHold
+        qtty: quantity + onHold
     }).then(() => {
         delData(tr);
     })

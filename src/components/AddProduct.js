@@ -28,7 +28,7 @@ export default function AddProduct() {
   const dateStamp = new Date();
   const month = dateStamp.getMonth() + 1;
   const [selectedUnit, setSelectedUnit] = useState();
-  
+  const [fQtty, setFQtty] = useState(0);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false)
   const windowHeight = Dimensions.get('window').height;
@@ -128,7 +128,7 @@ function closePicker() {
                 qttyOnhold: 0,
                 // prodCode : prodCode,
                 unit : selectedUnit,
-                fQtty: 0
+                fQtty: fQtty
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
@@ -137,8 +137,11 @@ function closePicker() {
                 setQtty("");
                 setProdCode("");
                 setExpired("");
+                setFQtty();
                 // setBuyRate("");
-               
+                update(ref(db, 'products/' + uniqID), {          
+                  qtty: fQtty  
+                })
                 // alert('data updated!');    
             })  
                 .catch((error) => {
@@ -263,6 +266,14 @@ function closePicker() {
           maxLength={60}>
       </TextInput>
 
+      <TextInput 
+          value={fQtty}
+          onChangeText={(fQtty) => {setFQtty(fQtty)}}
+          placeholder="Stok Awal (0 jika dikosongkan)"
+          mode='outlined'
+          style={styles.textBoxes}
+          maxLength={60}>
+      </TextInput>
       {/* <TextInput 
           value={qtty}
           onChangeText={(qtty) => {setQtty(qtty)}}
@@ -327,6 +338,8 @@ function closePicker() {
                   <Picker.Item label="Gram" value="gram" />
                   </Picker>
 
+                  
+
 </ScrollView>
 
       {/* Need improvement */}
@@ -350,6 +363,8 @@ function closePicker() {
             setTextError('Nama Produk Diperlukan!');
           }  else if (admin.trim() === ""){
             setTextError('Admin pencatat diperlukan!');
+          }  else if (selectedUnit === undefined){
+            setTextError('Silakan memilih satuan unit!');
           }  
           // else if (buyRate.trim() === ""){
           //   setBuyRate("0");

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native';
 import React from 'react'
 // import { TextInput } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
@@ -25,7 +25,7 @@ const [transacRet, setTransacRet] = useState("0");
 const [disableTexIn, setDisableTexIn] = useState("0");
 const [trData, setTrData] = useState([]);
 const [admin, setAdmin] = useState("");
-
+const [errText, setErrText] = useState("");
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 const dateStamp = new Date();
@@ -91,6 +91,11 @@ const createData = () => {
 
    
       if (parseInt(transacIn) > 0 && admin !== "") {
+        Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
+        setTransacIn('');
+      } else {
+       
+
         set(ref(db, 'transactions/' + String(trUID) ), {       
             transacID: String(trUID),   
             UID: prevName.UID,
@@ -111,7 +116,7 @@ const createData = () => {
             unit: prevName.unit,
             
           }).then(() => {
-            alert("transaksi ditambah");
+            Alert.alert('Transaksi dibuat!', `Transaksi berhasil ditambah.`);
             // setIsEditMode(true);
             setTransacIn("");
             // setSearchVal("");
@@ -123,9 +128,6 @@ const createData = () => {
                 fQtty: parseInt(transacIn)
             });
           })
-      } else {
-        alert("Tidak dapat menambahkan barang kurang dari 1!");
-        setTransacIn('');
       }
     
 
@@ -136,7 +138,13 @@ const createData = () => {
 const createDataOut = () => {
     
         
-       if (parseInt(transacOut) > 0 && parseInt(transacOut) <= prevName.addedQtty || parseInt(transacOut) == prevName.qtty && admin !== "" ) {
+       if (parseInt(transacOut) > 0 || parseInt(transacOut) < prevName.qtty || parseInt(transacOut) === prevName.qtty || admin !== "" ) {
+        Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
+        setTransacOut("");
+       } else {
+        
+
+
         set(ref(db, 'transactions/' + trUID ), {    
         
             transacID: trUID,   
@@ -156,7 +164,7 @@ const createDataOut = () => {
             admin: admin,
             unit: prevName.unit
           }).then(() => {
-            alert("transaksi ditambah");
+            Alert.alert('Transaksi dibuat!', `Transaksi berhasil ditambah.`);
             // setIsEditMode(true);
             setTransacOut("");
             
@@ -165,9 +173,6 @@ const createDataOut = () => {
                 subbsQtty: parseInt(prevName.subbsQtty + parseInt(transacOut))
             });
           })
-       } else {
-        alert("Jumlah transaksi keluar tidak valid!");
-        setTransacOut("");
        }
         
         
@@ -222,9 +227,9 @@ const createDataRet = () => {
             // console.log(parseInt(totalOut));
         
             // console.log(searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}))
-            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut) || parseInt(totalRet) >= parseInt(totalIn)) {
+            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut) || parseInt(totalRet) > parseInt(totalIn) || parseInt(totalRet) > parseInt(totalOut) ) {
                 setTransacRet(NaN);
-                alert("Jumlah transaksi retur tidak valid!");
+                Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
             } else{
                 set(ref(db, 'transactions/' + trUID ), {    
         
@@ -247,7 +252,7 @@ const createDataRet = () => {
                     admin: admin,
                     unit: prevName.unit
                   }).then(() => {
-                    alert("transaksi ditambah");
+                    Alert.alert('Transaksi dibuat!', `Transaksi berhasil ditambah.`);
                     // setIsEditMode(true);
                     setTransacRet("");
                     update(ref(db, 'products/' + prevName.UID), {
@@ -292,6 +297,9 @@ const handleOpenBottomSheet = (param) => {
   setPrevName(param);
   if (param.qtty > 0) {
     setDisableTexIn(false);
+  }
+  if (param.qttyOnhold > param.subbsQtty || param.subbsQtty === 0) {
+    setDisableTexIn(true);
   }
 };
 
@@ -698,13 +706,17 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 { disableTexIn ? <Text style={{color:"red"}}>Masukan barang terlebih dahulu!</Text> : <TextInput 
                                     value={transacOut}
                                     // placeholder={String(prevName.qtty)}
-                                    onChangeText={(transacOut) => {setTransacOut(transacOut)}}
+                                    onChangeText={(transacOut) => {setTransacOut(transacOut); transacOut > prevName.qtty? setErrText("Jumlah stok keluar tidak dapat lebih dari stok tersimpan!"): setErrText("")}}
                                     keyboardType='numeric'
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>}
                                 { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok keluar)</Text>}
                             </View>
+
+                            {!!errText && (
+                                <Text style={{color: "red"}}>{errText}</Text>
+                            )}
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
                                 { disableTexIn ? <Text style={{color:"rgba(203, 114, 4, 0.69)"}}>Silakan kembali lalu pilih opsi "Masuk"</Text> : <TextInput 
@@ -798,7 +810,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     </View>
                 
                 
-                    <View style={{ paddingVertical: 16 }}>
+                    {disableTexIn? <Text style={{color:"red", marginTop: 20}}>Tidak dapat melakukan retur, silakan cek stok barang!</Text> :<View style={{ paddingVertical: 16 }}>
                             <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} />
                             <SubText text={prevName.proDesc} family={'Poppins'} color={'#86827e'} size={15} />
                             
@@ -812,13 +824,17 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 <TextInput 
                                     value={transacRet}
                                     // placeholder={String(prevName.qtty)}
-                                    onChangeText={(transacRet) => {setTransacRet(transacRet)}}
+                                    onChangeText={(transacRet) => {setTransacRet(transacRet); transacRet > prevName.subbsQtty? setErrText("Jumlah stok untuk retur tidak dapat melebihi jumlah produk keluar!") : setErrText("")}}
                                     keyboardType='numeric'
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>
                                 <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok diretur)</Text>
                             </View>
+
+                            {!!errText && (
+                                <Text style={{color: "red"}}>{errText}</Text>
+                            )}
 
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
                                 <TextInput 
@@ -831,7 +847,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                 ></TextInput>
                                 <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> (admin pencatat)</Text>
                             </View>
-                    </View>
+                    </View>}
                         
                             <View style={{
                                 // flex: 1,
