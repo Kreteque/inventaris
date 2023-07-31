@@ -45,6 +45,12 @@ export default function Dashboard({navigation, props}) {
        AskPermission()
 }, []);
 
+const updatePeriod = () => {
+  update(ref(db, 'products/'), {
+    fQtty: Object.values(prData).map((item) => {return item.qtty})
+  })
+}
+
 const requestExternalPermission = async () => {
   try {
     const granted = await PermissionsAndroid.request(
@@ -99,8 +105,10 @@ const generatePDF = async () => {
             counter-increment: step;
             content: counter(step, decimal);
             
-          } img {
-            
+          } div {
+            align-self: flex-start;
+            margin-top: 20px;
+            font-size: 0.8em;
           }
         </style>
       </head>
@@ -124,10 +132,10 @@ const generatePDF = async () => {
         </tr>
         <tr>
             
-            <th>Awal</th>
+            <th>Awal*</th>
             <th>Masuk</th>
             <th>Keluar</th>
-            <th>Retur</th>
+            <th>Retur**</th>
             <th>Akhir</th> 
            
         </tr>
@@ -142,10 +150,19 @@ const generatePDF = async () => {
             <td>${item.fQtty}</td>
             <td>${item.addedQtty}</td>
             <td>${item.subbsQtty}</td>
-            <td>${item.qttyOnhold}</td>
+            <td>${item.reject + item.restok + item.qttyOnhold}</td>
             <td>${item.qtty}</td>
         </tr>`})}
     </table>
+
+    <div>
+      <span>
+        Keterangan: <br><br>
+        *Stok awal merupakan data dari stok akhir pada periode sebelumnya (jika ada),<br>
+         atau berasal stok awal yang dimasukan.<br>
+        **${Object.values(prData).map((item) => {return `reject (${item.reject}) + restok (${item.restok}) + non-remark (${item.qttyOnhold}) = ${item.reject + item.restok + item.qttyOnhold}`})} <br>
+      </span>
+    </div
     
       </body>
     </html>

@@ -22,7 +22,7 @@ export default function AllProducts({navigation, props}) {
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [prevName, setPrevName] = useState([]);
     const [isEditable, setIsEditable] = useState(false);
-   
+    const [displayList, setDisplayList] = useState(false);
     const [isEditMode, setIsEditMode] = useState(true); 
     const [uniqID, setUniqID] = useState(""); 
     const [proName, setProName] = useState("");
@@ -64,7 +64,7 @@ const getData = () => {
       const data = snapshot.val();
       
         if (data === null) {
-            setProdItems("");
+            setProdItems([]);
             setNotNull(false);
             
         } else {
@@ -72,8 +72,22 @@ const getData = () => {
             setNotNull(true);
             
         }
+
+        if (data !== null) {
+            setDisplayList(true);
+        } else {
+            setDisplayList(false);
+        }
     })
 
+}
+
+const getDataTr = () => {
+    const starCountRef = query(ref(db, 'transactions/'));
+        onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        setProdTran(data);
+        });
 }
 
 useEffect(() => {
@@ -81,6 +95,7 @@ useEffect(() => {
     // setSortedObject(sortable);
     // checkSortedBy();
     // setSortedBy("sortable");
+    getDataTr();
     
 }, [])
 
@@ -97,11 +112,7 @@ totalCount.map((item) => {
 
 const delData = (param) => {
 
-        const starCountRef = query(ref(db, 'transactions/'));
-        onValue(starCountRef, (snapshot) => {
-        const data = snapshot.val();
-        setProdTran(data);
-        });
+        
         
     
         let searchTransac = prodTran ? Object.values(prodTran) : [];
@@ -264,7 +275,8 @@ const checkSortedBy = () => {
     
     
 }
-    
+
+
   return (
 
     <View style={styles.container}>
@@ -366,7 +378,7 @@ const checkSortedBy = () => {
 
         
         
-        <ScrollView style={styles.containerChildTwo}>
+        {displayList? <ScrollView style={styles.containerChildTwo}>
 
         {notNull ? sortable.map((item) => {
             const firstLetter = item.proName;
@@ -470,7 +482,47 @@ const checkSortedBy = () => {
         
         
 
-        </ScrollView>
+        </ScrollView>: 
+        
+        <TouchableOpacity style={styles.productListCard} onPress={() => {navigation.navigate("Tambah Produk")}}>
+
+                            <View style={{
+                                width: 56,
+                                height: "100%",
+                                backgroundColor: "rgba(255, 95, 19, 0.8)",
+                                marginRight: 10,
+                                borderRadius: 50
+                            }}>
+                                <Text style={{
+                                    alignSelf: 'center',
+                                    margin: 15,
+                                    fontSize: 22,
+                                    fontWeight: "bold",
+                                    color: "white"
+                                }}>!</Text>
+                            </View>
+
+                            <View>
+                            <Text style={{
+                                fontSize: 19,
+                                color: "black",
+                                fontWeight: "bold",
+                                
+                            }}>Belum ada data
+
+                            </Text>
+
+                            <Text style={{color : "grey"}}><Text style={{color : "black"}}></Text>Klik disini untuk tambah data</Text>
+                            <View>
+                            
+                            <View style={{ marginTop: 2, opacity: .60, height: 1, borderWidth: 1, borderColor: 'rgba(233, 89, 22, 0.65)', width: 270 }} />
+                            </View>
+
+
+                            </View>
+
+
+        </TouchableOpacity> }
         
         
 

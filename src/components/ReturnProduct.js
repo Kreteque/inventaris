@@ -47,10 +47,15 @@ const readData = () => {
     })
 }
 
-const delData = (param) => {
-    
+const delData = (param, uid, onHold, reject, subbs, trqtty) => {
+    update(ref(db, 'products/' + uid ), {
+        reject: reject += trqtty,
+        subbsQtty: subbs - trqtty,
+        qttyOnhold: onHold - trqtty
+    }).then(() => {
     remove(ref(db, 'transactions/' + param));
-    alert('removed');
+    })
+    
   }
 
 const transacID = () => {
@@ -60,11 +65,14 @@ const transacID = () => {
 const trUID = transacID();
 
 
-const updateProdQtty = (uid, quantity, onHold, tr ) => {
+const updateProdQtty = (uid, quantity, onHold, tr, restok, subbs, trqtty ) => {
     update(ref(db, 'products/' + uid), {
-        qtty: quantity + onHold
+        qtty: quantity += trqtty,
+        restok: restok += trqtty,
+        subbsQtty: subbs - trqtty,
+        qttyOnhold: - trqtty
     }).then(() => {
-        delData(tr);
+        delData(tr, uid, onHold, 0, subbs, trqtty);
     })
 }
 
@@ -436,8 +444,9 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                                 
                                                 style: 'cancel',
                                             },
-                                            {text: 'Re-stok', onPress: () => {updateProdQtty(prevName.UID, prevName.trQtty, prevName.qttyOnhold, prevName.transacID.toLowerCase()); handleCloseBottomSheet();}},
+                                            {text: 'Re-stok', onPress: () => {updateProdQtty(prevName.UID, prevName.qtty, prevName.qttyOnhold, prevName.transacID.toLowerCase(), prevName.restok, prevName.subbsQtty, prevName.trQtty); handleCloseBottomSheet();}},
                                             ]);
+                                            console.log(prevName.restok)
                                 }} style={{
                                     // backgroundColor:"brown",
                                     // width: 100,
@@ -464,7 +473,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                                 
                                                 style: 'cancel',
                                             },
-                                            {text: 'Hapus', onPress: () => {delData(prevName.transacID.toLowerCase()); handleCloseBottomSheet();}},
+                                            {text: 'Hapus', onPress: () => {delData(prevName.transacID.toLowerCase(), prevName.UID, prevName.qttyOnhold, prevName.reject, prevName.subbsQtty, prevName.trQtty); handleCloseBottomSheet();}},
                                             ]);
                                 }} style={{
                                     // backgroundColor:"brown",

@@ -22,7 +22,8 @@ const [tranOut, setTranOut] = useState("");
 const [tranRet, setTranRet] = useState("");
 const [transacOut, setTransacOut] = useState("0");
 const [transacRet, setTransacRet] = useState("0");
-const [disableTexIn, setDisableTexIn] = useState("0");
+const [disableTexIn, setDisableTexIn] = useState();
+const [disableTexInRet, setDisableTexInRet] = useState();
 const [trData, setTrData] = useState([]);
 const [admin, setAdmin] = useState("");
 const [errText, setErrText] = useState("");
@@ -90,7 +91,7 @@ const createData = () => {
     // const newKey = push(child(ref(database), 'users')).key;
 
    
-      if (parseInt(transacIn) > 0 && admin !== "") {
+      if (parseInt(transacIn) < 0 && admin !== "") {
         Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
         setTransacIn('');
       } else {
@@ -121,12 +122,22 @@ const createData = () => {
             setTransacIn("");
             // setSearchVal("");
             setTranRet('');
+
+            if (prevName.fQtty === 0) {
+                update(ref(db, 'products/' + prevName.UID), {
+                    qtty : parseInt(prevName.qtty + parseInt(transacIn)),
+                    addedQtty: parseInt(prevName.addedQtty + parseInt(transacIn)),
+                    fQtty: prevName.fQtty
+                });
+            } else {
+                update(ref(db, 'products/' + prevName.UID), {
+                    qtty : parseInt(prevName.qtty + parseInt(transacIn)),
+                    addedQtty: parseInt(prevName.addedQtty + parseInt(transacIn)),
+                    
+                });
+            }
     
-            update(ref(db, 'products/' + prevName.UID), {
-                qtty : parseInt(prevName.qtty + parseInt(transacIn)),
-                addedQtty: parseInt(prevName.addedQtty + parseInt(transacIn)),
-                fQtty: parseInt(transacIn)
-            });
+            
           })
       }
     
@@ -138,7 +149,7 @@ const createData = () => {
 const createDataOut = () => {
     
         
-       if (parseInt(transacOut) > 0 || parseInt(transacOut) < prevName.qtty || parseInt(transacOut) === prevName.qtty || admin !== "" ) {
+       if (parseInt(transacOut) < 0 || parseInt(transacOut) > parseInt(prevName.qtty) || admin === ""  ) {
         Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
         setTransacOut("");
        } else {
@@ -227,7 +238,7 @@ const createDataRet = () => {
             // console.log(parseInt(totalOut));
         
             // console.log(searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}))
-            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut) || parseInt(totalRet) > parseInt(totalIn) || parseInt(totalRet) > parseInt(totalOut) ) {
+            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut) || parseInt(totalRet) > parseInt(totalOut) || prevName.qttyOnhold >= prevName.subbsQtty ) {
                 setTransacRet(NaN);
                 Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
             } else{
@@ -236,7 +247,7 @@ const createDataRet = () => {
                     transacID: trUID,   
                     UID: prevName.UID,
                     proName: prevName.proName.charAt(0).toUpperCase() + prevName.proName.slice(1),
-                    qtty:  0,
+                    qtty:  prevName.qtty,
                     proDesc: prevName.proDesc.charAt(0).toUpperCase() + prevName.proDesc.slice(1),
                     // buyRate: parseInt(prevName.buyRate) - parseInt(transacOut),
                     timeMark: prevName.timeMark,
@@ -250,7 +261,10 @@ const createDataRet = () => {
                     icon: "arrow-u-right-bottom-bold",
                     color: "rgba(243, 134, 0, 0.7)",
                     admin: admin,
-                    unit: prevName.unit
+                    unit: prevName.unit,
+                    reject: prevName.reject,
+                    restok: prevName.restok,
+                    subbsQtty: prevName.subbsQtty
                   }).then(() => {
                     Alert.alert('Transaksi dibuat!', `Transaksi berhasil ditambah.`);
                     // setIsEditMode(true);
@@ -297,9 +311,8 @@ const handleOpenBottomSheet = (param) => {
   setPrevName(param);
   if (param.qtty > 0) {
     setDisableTexIn(false);
-  }
-  if (param.qttyOnhold > param.subbsQtty || param.subbsQtty === 0) {
-    setDisableTexIn(true);
+  } if (param.qttyOnhold > param.subbsQtty || param.subbsQtty === 0) {
+    setDisableTexInRet(true);
   }
 };
 
@@ -810,7 +823,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     </View>
                 
                 
-                    {disableTexIn? <Text style={{color:"red", marginTop: 20}}>Tidak dapat melakukan retur, silakan cek stok barang!</Text> :<View style={{ paddingVertical: 16 }}>
+                    {disableTexInRet? <Text style={{color:"red", marginTop: 20}}>Tidak dapat melakukan retur, transaksi keluar tidak ditemukan!</Text> :<View style={{ paddingVertical: 16 }}>
                             <SubText text={prevName.proName} family={'PoppinsSBold'} color={'#292929'} size={25} />
                             <SubText text={prevName.proDesc} family={'Poppins'} color={'#86827e'} size={15} />
                             

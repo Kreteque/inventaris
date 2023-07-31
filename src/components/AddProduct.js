@@ -128,7 +128,9 @@ function closePicker() {
                 qttyOnhold: 0,
                 // prodCode : prodCode,
                 unit : selectedUnit,
-                fQtty: fQtty
+                fQtty: parseInt(fQtty),
+                restok: 0,
+                reject: 0
               }).then(() => {
                 // Data saved successfully!
                 setUniqID("");
@@ -140,7 +142,7 @@ function closePicker() {
                 setFQtty();
                 // setBuyRate("");
                 update(ref(db, 'products/' + uniqID), {          
-                  qtty: fQtty  
+                  qtty: parseInt(fQtty)  
                 })
                 // alert('data updated!');    
             })  
@@ -333,9 +335,9 @@ function closePicker() {
                       width: 100,
                       height: 60}}>
                                 
-                  <Picker.Item label="Pilih" value="" />
-                  <Picker.Item label="Buah" value="buah" />
-                  <Picker.Item label="Gram" value="gram" />
+                  <Picker.Item style={{color: "black"}} label="Pilih" value="" />
+                  <Picker.Item style={{color: "black"}} label="Buah" value="buah" />
+                  <Picker.Item style={{color: "black"}} label="Gram" value="gram" />
                   </Picker>
 
                   
