@@ -9,6 +9,7 @@ import { ButtonGroup } from '@rneui/base';
 import AddProduct from './AddProduct';
 import BottomDrawer from "./BottomDrawer";
 import { TextInput } from 'react-native-paper';
+import { PieChart } from 'react-native-chart-kit';
 
 
 
@@ -35,14 +36,36 @@ export default function AllProducts({navigation, props}) {
     const [isSearching, setIsSearching] = useState(false);
     const [sortedObject, setSortedObject] = useState();
     const [prodTran, setProdTran] = useState([]);
-
+    const [containerChildCol, setContainerChildCol] = useState("white");
 
     
 
     let totalQtty = [];
-    // let totalBuyRate = [];
+    let totalOut = [];
+    let totalRet = [];
     
-    
+    const totalCount = Object.values(prodItems);
+    totalCount.map((item) => {
+        totalQtty.push(item.qtty);
+        totalOut.push(item.subbsQtty);
+        totalRet.push(item.qttyOnhold);
+        // setSortedObject(item);
+        // totalProducts.push(item.UID);
+    });
+
+    //responsive container child colors
+    // if (totalQtty.reduce((a, b) => {return a + b;}, 0) > totalOut.reduce((a, b) => {return a + b;}, 0) && totalRet.reduce((a, b) => {return a + b;}, 0)) {
+    //     setContainerChildCol("rgba(197, 245, 242, 0.8)");
+    // }
+
+    // if (totalOut.reduce((a, b) => {return a + b;}, 0) > totalQtty.reduce((a, b) => {return a + b;}, 0) && totalRet.reduce((a, b) => {return a + b;}, 0)) {
+    //     setContainerChildCol("rgba(245, 196, 196, 0.8)");
+    // }
+
+    // if (totalRet.reduce((a, b) => {return a + b;}, 0) > totalQtty.reduce((a, b) => {return a + b;}, 0) && totalOut.reduce((a, b) => {return a + b;}, 0)) {
+    //     setContainerChildCol("rgba(245, 241, 196, 0.8)");
+    // }
+
     // let totalProducts = [];
     const dateStamp = new Date();
     const month = dateStamp.getMonth() + 1;
@@ -99,13 +122,7 @@ useEffect(() => {
     
 }, [])
 
-const totalCount = Object.values(prodItems);
-totalCount.map((item) => {
-    totalQtty.push(item.qtty);
-    // totalBuyRate.push(item.buyRate);
-    // setSortedObject(item);
-    // totalProducts.push(item.UID);
-});
+
 
 // const totBR = totalBuyRate.reduce((a, b) => a + b, 0);
 //       let totBRnum = parseInt(totBR);
@@ -252,6 +269,40 @@ prodSortedByName = prodSortedByName.sort((a, b) => {
 
 // console.log(sortedObject);
 
+const dataPC = [
+    {
+      name: "Masuk",
+      population: totalQtty.reduce((a, b) => {return a + b;}, 0),
+      color: "rgba(49, 149, 38, 0.8)",
+      legendFontColor: "rgba(49, 149, 38, 0.8)",
+      legendFontSize: 15
+    },
+    {
+      name: "Keluar",
+      population: totalOut.reduce((a, b) => {return a + b;}, 0),
+      color: "rgba(208, 4, 19, 0.8)",
+      legendFontColor: "rgba(208, 4, 19, 0.8)",
+      legendFontSize: 15
+    },
+    {
+      name: "Retur",
+      population: totalRet.reduce((a, b) => {return a + b;}, 0),
+      color: "rgba(255, 151, 0, 0.8)",
+      legendFontColor: "rgba(255, 151, 0, 0.8)",
+      legendFontSize: 15
+    },
+  ];
+
+  const chartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#08130D",
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  };
 
 const checkSortedBy = () => {
     switch (sortedBy) {
@@ -281,9 +332,15 @@ const checkSortedBy = () => {
 
     <View style={styles.container}>
 
-        <View style={styles.containerChild}>
+        <View style={{
+            alignSelf: "center",
+            backgroundColor : "rgba(196, 217, 245, 0.8)",
+            height: 150,
+            width: 366,
+            borderRadius: 20,
+        }}>
 
-        <ImageBackground 
+        {/* <ImageBackground 
         source={{uri: "https://img.freepik.com/premium-vector/large-set-business-themed-items-business-partnership-business-concept-vector-illustration_666729-190.jpg?w=2000"}}
         style={{
           flex: 1,
@@ -292,7 +349,7 @@ const checkSortedBy = () => {
         resizeMode='cover'
         blurRadius={1}
         
-        ></ImageBackground>
+        ></ImageBackground> */}
 
             {/* <View style={styles.infoCard}>
 
@@ -320,6 +377,18 @@ const checkSortedBy = () => {
             </View>
 
             </View> */}
+
+            <PieChart
+            data={dataPC}
+            width={300}
+            height={150}
+            chartConfig={chartConfig}
+            accessor={"population"}
+            backgroundColor={"transparent"}
+            paddingLeft={"15"}
+            center={[10, 5]}
+            absolute
+            />
 
         </View>
 
@@ -1045,8 +1114,13 @@ const styles = StyleSheet.create({
     },
 
     containerChild : {
-        backgroundColor :'#d0e0e3',
-        height: 150
+        
+        alignSelf: "center",
+        // backgroundColor : ,
+        height: 150,
+        width: 360,
+        borderRadius: 25,
+        
      },
 
      containerChildTwo : {
