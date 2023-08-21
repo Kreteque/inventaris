@@ -576,14 +576,23 @@ const checkSortedBy = () => {
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)  </Text>  
-                                <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                {/* <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} /> */}
                                 {/* <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text> */}
+                                
                             </View>
-                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            <View style={{ opacity: .5, height: 1, borderWidth: 3, borderColor: 'orange', borderStyle: "dashed" , marginVertical: 16, width: 340 }} />
                             {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.prodCode)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (kode produksi)</Text>
                             </View> */}
+
+                            <SubText text={"Informasi Retur:"} family={'Poppins-med'} size={16} color={'orange'} />
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'column', alignItems: "flex-start", marginTop: 5 }}>
+                                
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> {String(prevName.restok)} restock</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> {String(prevName.reject)} reject</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> {String(prevName.qttyOnhold)} non-remark</Text>
+                            </View>
                     </View>
                         
                             <View style={{
@@ -645,7 +654,8 @@ const checkSortedBy = () => {
 
                                 <TouchableOpacity onPress={() => {
                                         navigation.navigate("Tambah Transaksi", {
-                                            id : prevName.UID
+                                            id : prevName.UID, 
+                                           
                                         }
                                         );
                                         handleCloseBottomSheet();
@@ -824,7 +834,7 @@ const checkSortedBy = () => {
         }}>
 
             <TouchableOpacity onPress={() => {navigation.navigate("Buat Barcode"); setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(245, 141, 12, 0.44)",
+                backgroundColor: "rgba(245, 141, 12, 0.60)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 160,
@@ -852,7 +862,7 @@ const checkSortedBy = () => {
 
 
             <TouchableOpacity onPress={() => {navigation.navigate("Tambah Produk"); setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(5, 200, 235, 0.21)",
+                backgroundColor: "rgba(5, 200, 235, 0.60)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 160,
@@ -879,7 +889,7 @@ const checkSortedBy = () => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {navigation.navigate("Tambah Transaksi", prevName); setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                backgroundColor: "rgba(8, 148, 3, 0.55)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 160,
@@ -903,7 +913,7 @@ const checkSortedBy = () => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                backgroundColor: "rgba(8, 148, 3, 0.50)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 55,
@@ -943,7 +953,7 @@ const checkSortedBy = () => {
             
 
             <TouchableOpacity onPress={() => {setCollapsedButton(false); setIsSearching(true)}} style={{
-                backgroundColor: "rgba(39, 36, 98, 0.29)",
+                backgroundColor: "rgba(39, 36, 98, 0.50)",
                 flexDirection: "row",
                 // alignSelf: "flex-end",
                 width: 55,
@@ -964,7 +974,7 @@ const checkSortedBy = () => {
             </TouchableOpacity>
 
             <TouchableOpacity  onPress={() => {setCollapsedButton(false); navigation.navigate("Scan Barcode")}} style={{
-                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                backgroundColor: "rgba(8, 148, 3, 0.50)",
                 flexDirection: "row",
                 // alignSelf: "flex-start",
                 width: 55,
@@ -1001,7 +1011,7 @@ const checkSortedBy = () => {
             
 
             <TouchableOpacity onPress={() => {setCollapsedButton(true)}} style={{
-                backgroundColor: "rgba(39, 36, 98, 0.29)",
+                backgroundColor: "rgba(39, 36, 98, 0.50)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 55,

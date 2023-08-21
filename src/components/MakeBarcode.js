@@ -38,7 +38,7 @@ function Grid () {
       renderItem={({ item }) => (
         <View style={styles.itemContainer}>
         <BarcodeCreatorViewManager
-        value={"100"}
+        value={item.UID}
         background={"#FFFFFF"}
         foregroundColor={"#000000"}
         format={BarcodeFormat.QR}

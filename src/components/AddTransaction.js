@@ -42,6 +42,7 @@ useEffect(() => {
         
     } else {
         setSearchVal(route.params.id);
+        // handleOpenBottomSheet(route.params.id);
     }
 }, []);
 
@@ -149,7 +150,7 @@ const createData = () => {
 const createDataOut = () => {
     
         
-       if (parseInt(transacOut) < 0 || parseInt(transacOut) > parseInt(prevName.qtty) || admin === ""  ) {
+       if (parseInt(transacOut) < 0 || parseInt(transacOut) > parseInt(prevName.qtty) || admin === "" || parseInt(transacOut) == 0 ) {
         Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
         setTransacOut("");
        } else {
@@ -238,7 +239,10 @@ const createDataRet = () => {
             // console.log(parseInt(totalOut));
         
             // console.log(searchTransacOut.map((item) => {return parseInt(item.subbsQtty)}))
-            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut) || parseInt(totalRet) > parseInt(totalOut) || prevName.qttyOnhold >= prevName.subbsQtty ) {
+
+            /*this is if things get weird ---> || parseInt(totalRet) > parseInt(totalOut) || prevName.qttyOnhold > prevName.subbsQtty */
+            
+            if (parseInt(transacRet) < 0 || parseInt(transacRet) > parseInt(totalOut)  ) {
                 setTransacRet(NaN);
                 Alert.alert('Transaksi Gagal!', `Jumlah transaksi tidak valid!\nSilakan periksa kembali.`);
             } else{
@@ -270,7 +274,8 @@ const createDataRet = () => {
                     // setIsEditMode(true);
                     setTransacRet("");
                     update(ref(db, 'products/' + prevName.UID), {
-                        qttyOnhold: parseInt(prevName.qttyOnhold + parseInt(transacRet))
+                        qttyOnhold: parseInt(prevName.qttyOnhold + parseInt(transacRet)),
+                        subbsQtty: prevName.subbsQtty - parseInt(transacRet)
                     });
                     // update(ref(db, 'products/' + prevName.UID), {
                     //     qtty : parseInt(prevName.qtty - parseInt(transacOut))
@@ -311,7 +316,7 @@ const handleOpenBottomSheet = (param) => {
   setPrevName(param);
   if (param.qtty > 0) {
     setDisableTexIn(false);
-  } if (param.qttyOnhold > param.subbsQtty || param.subbsQtty === 0) {
+  } if ( param.subbsQtty === 0) {
     setDisableTexInRet(true);
   }
 };
@@ -342,7 +347,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
 
   return (
     <View style={styles.container}>
-      <TextInput 
+      { route.params.id ? null : <TextInput 
           outlineColor='rgba(17, 2, 158, 0.25)' 
           activeOutlineColor="rgba(17, 2, 158, 0.25)" 
           mode='outlined' 
@@ -366,7 +371,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
           placeholder='Cari barang berdasarkan semua properti barang' 
           style={styles.specializedTextBox}>
 
-      </TextInput>
+      </TextInput>}
 
       {/* <View>
         {searchById}
@@ -379,7 +384,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
             
             
             return (
-                <TouchableOpacity style={styles.productListCard} key={item.UID} onPress={() => {handleOpenBottomSheet(item)}}>
+                <TouchableOpacity style={styles.productListCard} key={item.UID} onLayout={() => { route.params.id ? handleOpenBottomSheet(item) : null }} onPress={() => {handleOpenBottomSheet(item)}}>
 
                     <View style={{
                         width: 56,
@@ -724,7 +729,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>}
-                                { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok keluar)</Text>}
+                                { disableTexIn? null : <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok keluar, <Text style={{color: "green", fontWeight: "bold"}}>tersimpan: {prevName.qtty}</Text>)</Text>}
                             </View>
 
                             {!!errText && (
@@ -842,7 +847,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                                     maxLength={9007199254740991}
                                     
                                 ></TextInput>
-                                <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok diretur)</Text>
+                                <Text style={{color : "grey"}} color={'rgba(136, 8, 4, 0.68)'} size={14} family={'Poppins-med'}> <Text style={{fontWeight: "500", color: "#292929"}}>{prevName.unit}</Text> (jumlah stok diretur, <Text style={{ color: "red", fontWeight: "bold"}}>keluar: {prevName.subbsQtty}</Text>)</Text>
                             </View>
 
                             {!!errText && (
