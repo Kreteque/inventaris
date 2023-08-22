@@ -10,7 +10,8 @@ import AddProduct from './AddProduct';
 import BottomDrawer from "./BottomDrawer";
 import { TextInput } from 'react-native-paper';
 import { PieChart } from 'react-native-chart-kit';
-
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 
 
@@ -52,7 +53,6 @@ export default function AllProducts({navigation, props}) {
         // setSortedObject(item);
         // totalProducts.push(item.UID);
     });
-
     //responsive container child colors
     // if (totalQtty.reduce((a, b) => {return a + b;}, 0) > totalOut.reduce((a, b) => {return a + b;}, 0) && totalRet.reduce((a, b) => {return a + b;}, 0)) {
     //     setContainerChildCol("rgba(197, 245, 242, 0.8)");
@@ -76,9 +76,21 @@ export default function AllProducts({navigation, props}) {
       
     //   });
 
-   
-      
-      
+
+var option = {
+  style: 'percent'
+
+};
+var formatter = new Intl.NumberFormat("en-US", option);
+
+let accessorIn = totalQtty.reduce((a, b) => {return a + b ;}, 0);
+let formatdAccessorIn = formatter.format(parseFloat(accessorIn)/100);
+
+let accessorOut = totalOut.reduce((a, b) => {return parseFloat(a + b );}, 100);
+let formatdAccessorOut = formatter.format(parseFloat(accessorOut)/10);
+
+let accessorRet = totalRet.reduce((a, b) => {return parseFloat(a + b );}, 100);
+let formatdAccessorRet = formatter.format(parseFloat(accessorRet)/10);
 
     
 const getData = () => {
@@ -271,22 +283,22 @@ prodSortedByName = prodSortedByName.sort((a, b) => {
 
 const dataPC = [
     {
-      name: "Masuk",
-      population: totalQtty.reduce((a, b) => {return a + b;}, 0),
+      name: "%  Masuk",
+      population: parseFloat(formatdAccessorIn) ,
       color: "rgba(49, 149, 38, 0.8)",
       legendFontColor: "rgba(49, 149, 38, 0.8)",
       legendFontSize: 15
     },
     {
-      name: "Keluar",
-      population: totalOut.reduce((a, b) => {return a + b;}, 0),
+      name: "%  Keluar",
+      population: parseFloat(formatdAccessorOut),
       color: "rgba(208, 4, 19, 0.8)",
       legendFontColor: "rgba(208, 4, 19, 0.8)",
       legendFontSize: 15
     },
     {
-      name: "Retur",
-      population: totalRet.reduce((a, b) => {return a + b;}, 0),
+      name: "%  Retur",
+      population: parseFloat(formatdAccessorRet),
       color: "rgba(255, 151, 0, 0.8)",
       legendFontColor: "rgba(255, 151, 0, 0.8)",
       legendFontSize: 15
@@ -388,6 +400,7 @@ const checkSortedBy = () => {
             paddingLeft={"15"}
             center={[10, 5]}
             absolute
+            avoidFalseZero={false}
             />
 
         </View>

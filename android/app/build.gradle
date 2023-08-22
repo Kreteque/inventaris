@@ -99,7 +99,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "r_alpha-v1.0-220823"
         missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this line
         missingDimensionStrategy 'react-native-camera', 'mlkit'
     }
