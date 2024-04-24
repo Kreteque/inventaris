@@ -160,7 +160,8 @@ const generatePDF = async () => {
         Keterangan: <br><br>
         *Stok awal merupakan data dari stok akhir pada periode sebelumnya (jika ada),<br>
          atau berasal stok awal yang dimasukan.<br>
-        **${Object.values(prData).map((item) => {return `reject (${item.reject}) + restok (${item.restok}) + non-remark (${item.qttyOnhold}) = ${item.reject + item.restok + item.qttyOnhold}`})} <br>
+
+        **reject + restock + non-remark
       </span>
     </div
     
@@ -483,7 +484,7 @@ if (isLoading) {
 
         <View>
         <TouchableOpacity onPress={() => {generatePDF()}} style={{
-                backgroundColor: "rgba(151, 214, 250, 0.5)",
+                backgroundColor: "rgba(151, 214, 250, 0.60)",
                 flexDirection: "row",
                 alignSelf: "flex-start",
                 width: 80,

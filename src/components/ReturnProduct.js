@@ -50,8 +50,8 @@ const readData = () => {
 const delData = (param, uid, onHold, reject, subbs, trqtty) => {
     update(ref(db, 'products/' + uid ), {
         reject: reject += trqtty,
-        subbsQtty: subbs - trqtty,
-        qttyOnhold: onHold - trqtty
+        subbsQtty: subbs -= trqtty,
+        qttyOnhold: onHold -= trqtty
     }).then(() => {
     remove(ref(db, 'transactions/' + param));
     })
@@ -69,10 +69,10 @@ const updateProdQtty = (uid, quantity, onHold, tr, restok, subbs, trqtty ) => {
     update(ref(db, 'products/' + uid), {
         qtty: quantity += trqtty,
         restok: restok += trqtty,
-        subbsQtty: subbs - trqtty,
-        qttyOnhold: - trqtty
+        subbsQtty: subbs -= trqtty,
+        qttyOnhold: onHold -= trqtty
     }).then(() => {
-        delData(tr, uid, onHold, 0, subbs, trqtty);
+        delData(tr, uid, onHold, 0, subbs, 0);
     })
 }
 

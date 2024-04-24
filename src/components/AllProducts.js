@@ -9,7 +9,9 @@ import { ButtonGroup } from '@rneui/base';
 import AddProduct from './AddProduct';
 import BottomDrawer from "./BottomDrawer";
 import { TextInput } from 'react-native-paper';
-
+import { PieChart } from 'react-native-chart-kit';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 
 
@@ -35,14 +37,35 @@ export default function AllProducts({navigation, props}) {
     const [isSearching, setIsSearching] = useState(false);
     const [sortedObject, setSortedObject] = useState();
     const [prodTran, setProdTran] = useState([]);
-
+    const [containerChildCol, setContainerChildCol] = useState("white");
 
     
 
     let totalQtty = [];
-    // let totalBuyRate = [];
+    let totalOut = [];
+    let totalRet = [];
     
-    
+    const totalCount = Object.values(prodItems);
+    totalCount.map((item) => {
+        totalQtty.push(item.qtty);
+        totalOut.push(item.subbsQtty);
+        totalRet.push(item.qttyOnhold);
+        // setSortedObject(item);
+        // totalProducts.push(item.UID);
+    });
+    //responsive container child colors
+    // if (totalQtty.reduce((a, b) => {return a + b;}, 0) > totalOut.reduce((a, b) => {return a + b;}, 0) && totalRet.reduce((a, b) => {return a + b;}, 0)) {
+    //     setContainerChildCol("rgba(197, 245, 242, 0.8)");
+    // }
+
+    // if (totalOut.reduce((a, b) => {return a + b;}, 0) > totalQtty.reduce((a, b) => {return a + b;}, 0) && totalRet.reduce((a, b) => {return a + b;}, 0)) {
+    //     setContainerChildCol("rgba(245, 196, 196, 0.8)");
+    // }
+
+    // if (totalRet.reduce((a, b) => {return a + b;}, 0) > totalQtty.reduce((a, b) => {return a + b;}, 0) && totalOut.reduce((a, b) => {return a + b;}, 0)) {
+    //     setContainerChildCol("rgba(245, 241, 196, 0.8)");
+    // }
+
     // let totalProducts = [];
     const dateStamp = new Date();
     const month = dateStamp.getMonth() + 1;
@@ -53,9 +76,21 @@ export default function AllProducts({navigation, props}) {
       
     //   });
 
-   
-      
-      
+
+var option = {
+  style: 'percent'
+
+};
+var formatter = new Intl.NumberFormat("en-US", option);
+
+let accessorIn = totalQtty.reduce((a, b) => {return a + b ;}, 0);
+let formatdAccessorIn = formatter.format(parseFloat(accessorIn)/100);
+
+let accessorOut = totalOut.reduce((a, b) => {return parseFloat(a + b );}, 100);
+let formatdAccessorOut = formatter.format(parseFloat(accessorOut)/10);
+
+let accessorRet = totalRet.reduce((a, b) => {return parseFloat(a + b );}, 100);
+let formatdAccessorRet = formatter.format(parseFloat(accessorRet)/10);
 
     
 const getData = () => {
@@ -99,13 +134,7 @@ useEffect(() => {
     
 }, [])
 
-const totalCount = Object.values(prodItems);
-totalCount.map((item) => {
-    totalQtty.push(item.qtty);
-    // totalBuyRate.push(item.buyRate);
-    // setSortedObject(item);
-    // totalProducts.push(item.UID);
-});
+
 
 // const totBR = totalBuyRate.reduce((a, b) => a + b, 0);
 //       let totBRnum = parseInt(totBR);
@@ -252,6 +281,40 @@ prodSortedByName = prodSortedByName.sort((a, b) => {
 
 // console.log(sortedObject);
 
+const dataPC = [
+    {
+      name: "%  Masuk",
+      population: parseFloat(formatdAccessorIn) ,
+      color: "rgba(49, 149, 38, 0.8)",
+      legendFontColor: "rgba(49, 149, 38, 0.8)",
+      legendFontSize: 15
+    },
+    {
+      name: "%  Keluar",
+      population: parseFloat(formatdAccessorOut),
+      color: "rgba(208, 4, 19, 0.8)",
+      legendFontColor: "rgba(208, 4, 19, 0.8)",
+      legendFontSize: 15
+    },
+    {
+      name: "%  Retur",
+      population: parseFloat(formatdAccessorRet),
+      color: "rgba(255, 151, 0, 0.8)",
+      legendFontColor: "rgba(255, 151, 0, 0.8)",
+      legendFontSize: 15
+    },
+  ];
+
+  const chartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#08130D",
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  };
 
 const checkSortedBy = () => {
     switch (sortedBy) {
@@ -281,9 +344,15 @@ const checkSortedBy = () => {
 
     <View style={styles.container}>
 
-        <View style={styles.containerChild}>
+        <View style={{
+            alignSelf: "center",
+            backgroundColor : "rgba(196, 217, 245, 0.8)",
+            height: 150,
+            width: 366,
+            borderRadius: 20,
+        }}>
 
-        <ImageBackground 
+        {/* <ImageBackground 
         source={{uri: "https://img.freepik.com/premium-vector/large-set-business-themed-items-business-partnership-business-concept-vector-illustration_666729-190.jpg?w=2000"}}
         style={{
           flex: 1,
@@ -292,7 +361,7 @@ const checkSortedBy = () => {
         resizeMode='cover'
         blurRadius={1}
         
-        ></ImageBackground>
+        ></ImageBackground> */}
 
             {/* <View style={styles.infoCard}>
 
@@ -320,6 +389,19 @@ const checkSortedBy = () => {
             </View>
 
             </View> */}
+
+            <PieChart
+            data={dataPC}
+            width={300}
+            height={150}
+            chartConfig={chartConfig}
+            accessor={"population"}
+            backgroundColor={"transparent"}
+            paddingLeft={"15"}
+            center={[10, 5]}
+            absolute
+            avoidFalseZero={false}
+            />
 
         </View>
 
@@ -576,14 +658,23 @@ const checkSortedBy = () => {
                             <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={prevName.timeMark} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (tgl masuk)  </Text>  
-                                <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} />
+                                {/* <SubText text={prevName.Exp} color={'#292929'} family={'PoppinsSBold'} size={20} /> */}
                                 {/* <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (EXP)</Text> */}
+                                
                             </View>
-                            <View style={{ opacity: .2, height: 1, borderWidth: 1, borderColor: 'grey', marginVertical: 16, width: 340 }} />
+                            <View style={{ opacity: .5, height: 1, borderWidth: 3, borderColor: 'orange', borderStyle: "dashed" , marginVertical: 16, width: 340 }} />
                             {/* <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
                                 <SubText text={String(prevName.prodCode)} color={'#292929'} family={'PoppinsSBold'} size={20} />
                                 <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> (kode produksi)</Text>
                             </View> */}
+
+                            <SubText text={"Informasi Retur:"} family={'Poppins-med'} size={16} color={'orange'} />
+                            <View style={{ flex: 0, justifyContent: 'flex-start', flexDirection: 'column', alignItems: "flex-start", marginTop: 5 }}>
+                                
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> {String(prevName.restok)} restock</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> {String(prevName.reject)} reject</Text>
+                                <Text style={{color: "grey"}} color={'#86827e'} size={14} family={'Poppins-med'}> {String(prevName.qttyOnhold)} non-remark</Text>
+                            </View>
                     </View>
                         
                             <View style={{
@@ -645,7 +736,8 @@ const checkSortedBy = () => {
 
                                 <TouchableOpacity onPress={() => {
                                         navigation.navigate("Tambah Transaksi", {
-                                            id : prevName.UID
+                                            id : prevName.UID, 
+                                           
                                         }
                                         );
                                         handleCloseBottomSheet();
@@ -824,7 +916,7 @@ const checkSortedBy = () => {
         }}>
 
             <TouchableOpacity onPress={() => {navigation.navigate("Buat Barcode"); setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(245, 141, 12, 0.44)",
+                backgroundColor: "rgba(245, 141, 12, 0.60)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 160,
@@ -852,7 +944,7 @@ const checkSortedBy = () => {
 
 
             <TouchableOpacity onPress={() => {navigation.navigate("Tambah Produk"); setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(5, 200, 235, 0.21)",
+                backgroundColor: "rgba(5, 200, 235, 0.60)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 160,
@@ -879,7 +971,7 @@ const checkSortedBy = () => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {navigation.navigate("Tambah Transaksi", prevName); setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                backgroundColor: "rgba(8, 148, 3, 0.55)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 160,
@@ -903,7 +995,7 @@ const checkSortedBy = () => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {setCollapsedButton(false)}} style={{
-                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                backgroundColor: "rgba(8, 148, 3, 0.50)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 55,
@@ -943,7 +1035,7 @@ const checkSortedBy = () => {
             
 
             <TouchableOpacity onPress={() => {setCollapsedButton(false); setIsSearching(true)}} style={{
-                backgroundColor: "rgba(39, 36, 98, 0.29)",
+                backgroundColor: "rgba(39, 36, 98, 0.50)",
                 flexDirection: "row",
                 // alignSelf: "flex-end",
                 width: 55,
@@ -964,7 +1056,7 @@ const checkSortedBy = () => {
             </TouchableOpacity>
 
             <TouchableOpacity  onPress={() => {setCollapsedButton(false); navigation.navigate("Scan Barcode")}} style={{
-                backgroundColor: "rgba(8, 148, 3, 0.29)",
+                backgroundColor: "rgba(8, 148, 3, 0.50)",
                 flexDirection: "row",
                 // alignSelf: "flex-start",
                 width: 55,
@@ -1001,7 +1093,7 @@ const checkSortedBy = () => {
             
 
             <TouchableOpacity onPress={() => {setCollapsedButton(true)}} style={{
-                backgroundColor: "rgba(39, 36, 98, 0.29)",
+                backgroundColor: "rgba(39, 36, 98, 0.50)",
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 width: 55,
@@ -1035,8 +1127,13 @@ const styles = StyleSheet.create({
     },
 
     containerChild : {
-        backgroundColor :'#d0e0e3',
-        height: 150
+        
+        alignSelf: "center",
+        // backgroundColor : ,
+        height: 150,
+        width: 360,
+        borderRadius: 25,
+        
      },
 
      containerChildTwo : {

@@ -59,6 +59,11 @@ const transacID = () => {
 }
 const trUID = transacID();
 
+const checkIfNull = () => {
+    if (prodItems ===  [null]) {
+        setIsNull(true);
+    }
+}
 
 // const createData = () => {
     
@@ -121,11 +126,7 @@ useEffect(() => {
     readData();
     // console.log(route);
     // checkStatus();
-    if (prodItems ==  null) {
-        setIsNull(true);
-    } else {
-        setIsNull(false)
-    } 
+    
 }, []);
 
 // const createDataOut = () => {
@@ -232,6 +233,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
     <View style={styles.container}>
         <View>
             <TextInput 
+                onLayout={() => {checkIfNull()}}
                 outlineColor='rgba(17, 2, 158, 0.25)' 
                 activeOutlineColor="rgba(17, 2, 158, 0.25)" 
                 mode='outlined' 
@@ -258,7 +260,7 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
 
 
       {isSearching ? <ScrollView style={styles.containerChildTwo}>
-      { prodList ? prodList.map((item) => {
+      {prodList ? prodList.map((item) => {
             const firstLetter = item.proName;
             
             
@@ -305,7 +307,8 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
         }) : null}
         
         
-        </ScrollView> : <ScrollView style={styles.containerChildTwo}>
+        </ScrollView> : 
+        <ScrollView style={styles.containerChildTwo}>
       { isNull ? <View style={{
         alignSelf: "center",
         marginTop: 200
@@ -356,7 +359,6 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
                     }}>
                     
                     <Text><Text style={{color : "black"}}><MaterialCommunityIcons name={item.icon} size={25} color={item.color}/>{item.trQtty} {item.unit} {item.status} </Text></Text>
-                    {/* <Text><Text style={{color : "black", }}>  <MaterialCommunityIcons name='arrow-up-bold-box' size={15} color={"brown"}/>Keluar: </Text>{item.qtty}</Text> */}
                     </View>
                     
                    
@@ -374,7 +376,8 @@ const SubText = ({ borderWidth, borderColor, text, size, color, family, letterSp
         
         
                 
-        </ScrollView> }
+        </ScrollView> 
+        }
 
         
         
